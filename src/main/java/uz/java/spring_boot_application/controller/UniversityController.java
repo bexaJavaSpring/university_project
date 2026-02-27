@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.java.spring_boot_application.dto.UniversityRequest;
 import uz.java.spring_boot_application.dto.UniversityResponse;
+import uz.java.spring_boot_application.entities.University;
 import uz.java.spring_boot_application.service.UniversityService;
 
 import java.util.List;
@@ -37,6 +38,8 @@ public class UniversityController {
     }
 
     @PutMapping("/{universityId}")
-    public ResponseEntity<Long> update(@PathVariable Long universityId, @RequestBody  )
+    public ResponseEntity<Long> update(@PathVariable Long universityId, @RequestBody UniversityRequest request){
+        return ResponseEntity.ok(universityService.update(universityId, request));
+    }
 
 }
