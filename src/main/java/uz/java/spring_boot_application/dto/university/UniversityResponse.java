@@ -1,15 +1,13 @@
-package uz.java.spring_boot_application.dto;
+package uz.java.spring_boot_application.dto.university;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UniversityResponse {
     private Long id;
     private String name;

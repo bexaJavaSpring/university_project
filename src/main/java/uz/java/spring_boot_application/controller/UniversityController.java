@@ -3,9 +3,8 @@ package uz.java.spring_boot_application.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.java.spring_boot_application.dto.UniversityRequest;
-import uz.java.spring_boot_application.dto.UniversityResponse;
-import uz.java.spring_boot_application.entities.University;
+import uz.java.spring_boot_application.dto.university.UniversityRequest;
+import uz.java.spring_boot_application.dto.university.UniversityResponse;
 import uz.java.spring_boot_application.service.UniversityService;
 
 import java.util.List;
@@ -42,4 +41,8 @@ public class UniversityController {
         return ResponseEntity.ok(universityService.update(universityId, request));
     }
 
+    @DeleteMapping("/{universityId}")
+    public ResponseEntity<Boolean> delete(@PathVariable Long universityId){
+        return ResponseEntity.ok(universityService.delete(universityId));
+    }
 }

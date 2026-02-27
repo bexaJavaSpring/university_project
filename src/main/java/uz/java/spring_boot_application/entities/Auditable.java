@@ -45,7 +45,7 @@ public abstract class Auditable {
     @LastModifiedBy
     @Column(name = "updated_by")
     private Long updatedBy;
-
+// soft delete uchun
     public void markAsDeleted() {
         this.deleted = true;
         this.deletedAt = LocalDateTime.now();

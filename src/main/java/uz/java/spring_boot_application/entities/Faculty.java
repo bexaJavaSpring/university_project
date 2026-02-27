@@ -21,7 +21,7 @@ public class Faculty extends Auditable {
 
     // Unidirectional usul
     @ManyToOne
-    @JoinColumn(name = "university_id")
+    @JoinColumn(name = "university_id", nullable = false)
     private University university;
 
 

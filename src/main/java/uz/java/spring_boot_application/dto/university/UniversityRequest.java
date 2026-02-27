@@ -1,4 +1,4 @@
-package uz.java.spring_boot_application.dto;
+package uz.java.spring_boot_application.dto.university;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
