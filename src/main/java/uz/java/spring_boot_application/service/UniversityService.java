@@ -2,6 +2,7 @@ package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import uz.java.spring_boot_application.dto.UniversityRequest;
 import uz.java.spring_boot_application.dto.UniversityResponse;
 import uz.java.spring_boot_application.entities.University;
 import uz.java.spring_boot_application.repository.UniversityRepository;
@@ -41,5 +42,17 @@ public class UniversityService {
         response.setAddress(university.getAddress());
         response.setEmail(university.getEmail());
         return response;
+    }
+
+    public Long create(UniversityRequest request) {
+        University university = new University();
+        university.setName(request.getName());
+        university.setAddress(request.getAddress());
+        university.setEmail(request.getEmail());
+        university.setPhone(request.getPhone());
+        university.setLogo(request.getLogo());
+        university.setAttachmentUrls(request.getAttachmentUrls());
+        University response = universityRepository.save(university);// Alt + Enter bossa o`zgaruvchiga oladi
+        return response.getId();
     }
 }

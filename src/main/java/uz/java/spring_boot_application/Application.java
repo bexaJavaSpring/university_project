@@ -18,4 +18,5 @@ public class Application {
     // 5. Application layer --> helpers, componentalar
 
 //    CRUD -> Create, Read, Update, Delete
+//    REST API ishlatamiz
 }

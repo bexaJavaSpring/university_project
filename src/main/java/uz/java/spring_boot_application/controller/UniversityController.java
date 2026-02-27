@@ -1,12 +1,9 @@
 package uz.java.spring_boot_application.controller;
 
-import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.yaml.snakeyaml.events.Event;
+import org.springframework.web.bind.annotation.*;
+import uz.java.spring_boot_application.dto.UniversityRequest;
 import uz.java.spring_boot_application.dto.UniversityResponse;
 import uz.java.spring_boot_application.service.UniversityService;
 
@@ -34,6 +31,12 @@ public class UniversityController {
         return ResponseEntity.ok(universityService.getOne(id));
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<Long> create(@RequestBody @Valid UniversityRequest request){
+        return ResponseEntity.ok(universityService.create(request));
+    }
 
+    @PutMapping("/{universityId}")
+    public ResponseEntity<Long> update(@PathVariable Long universityId, @RequestBody  )
 
 }
