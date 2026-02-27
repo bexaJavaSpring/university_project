@@ -76,7 +76,7 @@ public class FacultyService {
     }
 
     public Long create(FacultyRequest request) {
-        Faculty faculty = new Faculty();
+        var faculty = new Faculty();
         faculty.setName(request.getName());
         faculty.setAddress(request.getAddress());
         University university = universityRepository.findById(request.getUniversityId()).orElseThrow(
@@ -88,7 +88,7 @@ public class FacultyService {
     }
 
     public Long update(Long id, FacultyRequest request) {
-        Faculty faculty = facultyRepository.getReferenceById(id);
+        var faculty = facultyRepository.getReferenceById(id);
         if (faculty == null)
             throw new RuntimeException("Faculty not found");
         if (request.getName() != null)
@@ -106,7 +106,7 @@ public class FacultyService {
     }
 
     public Boolean delete(Long id) {
-        Faculty faculty = facultyRepository.findById(id).orElse(null);
+        var faculty = facultyRepository.findById(id).orElse(null);
         if (faculty == null)
             throw new RuntimeException("Faculty not found");
         // CTRL + alt + L bossa kodni style ini taxlab beradi Intellij
