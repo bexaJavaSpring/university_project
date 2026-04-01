@@ -7,20 +7,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "zamdekan")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "students")
 @PrimaryKeyJoinColumn(name = "user_id")
-public class Student extends User {
+public class Zamdekan extends User {
 
-    private Integer age;
-
-    @Column(name = "student_status")
-    private String studentStatus;
-
-    @ManyToOne
-    @JoinColumn(name = "group_id", referencedColumnName = "id")
-    private Group group;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "faculty_id")
+    private Faculty faculty;
 }

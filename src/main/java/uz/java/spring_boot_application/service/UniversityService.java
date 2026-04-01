@@ -4,15 +4,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import uz.java.spring_boot_application.dto.university.UniversityFilter;
 import uz.java.spring_boot_application.dto.university.UniversityRequest;
 import uz.java.spring_boot_application.dto.university.UniversityResponse;
+import uz.java.spring_boot_application.entities.Faculty;
 import uz.java.spring_boot_application.entities.University;
+import uz.java.spring_boot_application.entities.User;
+import uz.java.spring_boot_application.entities.Zamdekan;
+import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.mapper.UniversityMapper;
+import uz.java.spring_boot_application.repository.FacultyRepository;
 import uz.java.spring_boot_application.repository.UniversityRepository;
+import uz.java.spring_boot_application.repository.UserRepository;
+import uz.java.spring_boot_application.repository.ZamdekanRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +29,9 @@ public class UniversityService {
 
     private final UniversityRepository universityRepository;
     private final UniversityMapper universityMapper;
+    private final ZamdekanRepository zamdekanRepository;
+    private final FacultyRepository facultyRepository;
+    private final UserRepository userRepository;
 
 
     public List<UniversityResponse> getAll(UniversityFilter filter) {
@@ -45,7 +53,7 @@ public class UniversityService {
     public UniversityResponse getOne(Long id) {
         University university = universityRepository.findById(id).orElse(null);
         if (university == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "University not found");
+            throw new GenericNotFoundException("University not found");
 
         return universityMapper.toResponse(university);
     }
@@ -82,6 +90,24 @@ public class UniversityService {
 
         // hard deleted
 //        universityRepository.delete(university);
+        return true;
+    }
+
+    public Boolean attachZamdekan(Long facultyId, List<Long> zamdekanIds) {
+        Faculty faculty = facultyRepository.findById(facultyId).orElseThrow(
+                () -> new GenericNotFoundException("Faculty not found")
+        );
+        zamdekanIds.stream().forEach(zamdekanId -> {
+            User user = userRepository.findById(zamdekanId).orElseThrow(
+                    () -> new GenericNotFoundException("User not found")
+            );
+            Zamdekan zamdekan = zamdekanRepository.findById(user.getId()).orElseThrow(
+                    () -> new GenericNotFoundException("Zamdekan not found")
+            );
+            zamdekan.setFaculty(faculty);
+            zamdekanRepository.save(zamdekan);
+        });
+
         return true;
     }
 }

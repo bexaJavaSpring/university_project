@@ -2,6 +2,7 @@ package uz.java.spring_boot_application.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.java.spring_boot_application.dto.university.UniversityFilter;
 import uz.java.spring_boot_application.dto.university.UniversityRequest;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/university")
+@PreAuthorize("hasRole('SUPER_ADMIN')")
 public class UniversityController {
 
     // Constructor-based DI(Dependency Injection)
@@ -49,5 +51,10 @@ public class UniversityController {
     @DeleteMapping("/{universityId}")
     public ResponseEntity<Boolean> delete(@PathVariable Long universityId){
         return ResponseEntity.ok(universityService.delete(universityId));
+    }
+
+    @PostMapping("/attachzamdekan/{facultyId}")
+    public ResponseEntity<?> attachZamdekanToFaculty(@PathVariable Long facultyId, @RequestParam List<Long> zamdekanIds){
+        return ResponseEntity.ok(universityService.attachZamdekan(facultyId, zamdekanIds));
     }
 }

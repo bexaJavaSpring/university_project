@@ -9,17 +9,18 @@ import uz.java.spring_boot_application.entities.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Setter
 public class CustomUserDetails implements UserDetails {
     @Getter
     private final User user;
-//    private final Set<GrantedAuthority> authorities;
+    private final Set<GrantedAuthority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return authorities;
     }
 
     @Override

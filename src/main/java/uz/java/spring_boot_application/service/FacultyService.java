@@ -1,19 +1,19 @@
 package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import uz.java.spring_boot_application.config.UserSession;
 import uz.java.spring_boot_application.dto.faculty.FacultyFilter;
 import uz.java.spring_boot_application.dto.faculty.FacultyRequest;
 import uz.java.spring_boot_application.dto.faculty.FacultyResponse;
-import uz.java.spring_boot_application.entities.Faculty;
-import uz.java.spring_boot_application.entities.University;
+import uz.java.spring_boot_application.entities.*;
+import uz.java.spring_boot_application.exception.CustomAccessDeniedException;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.mapper.FacultyMapper;
 import uz.java.spring_boot_application.repository.FacultyRepository;
 import uz.java.spring_boot_application.repository.UniversityRepository;
+import uz.java.spring_boot_application.repository.ZamdekanRepository;
+import uz.java.spring_boot_application.security.CustomUserDetails;
 import uz.java.spring_boot_application.specification.FacultySpecification;
 import uz.java.spring_boot_application.specification.SearchSpecification;
 
@@ -26,6 +26,8 @@ public class FacultyService {
     private final FacultyRepository facultyRepository;
     private final UniversityRepository universityRepository;
     private final FacultyMapper mapper;
+    private final UserSession userSession;
+    private final ZamdekanRepository zamdekanRepository;
 
     public List<FacultyResponse> getAll(FacultyFilter filter) {
         FacultySpecification spec = new FacultySpecification(filter);
@@ -39,6 +41,15 @@ public class FacultyService {
         Faculty faculty = facultyRepository.findById(id).orElseThrow(() ->
                 new GenericNotFoundException("faculty.not.found")
         );
+        CustomUserDetails currentUser = userSession.getCurrentUser();
+        User user = currentUser.getUser();
+        List<String> list = user.getRoles().stream().map(Role::getCode).toList();
+        if (list.contains("ROLE_ZAMDEKAN")) {
+            Zamdekan zamdekan = zamdekanRepository.findByUsername(user.getUsername());
+            if (!id.equals(zamdekan.getFaculty().getId())) {
+                throw new CustomAccessDeniedException("access.denied");
+            }
+        }
         return mapper.toResponse(faculty);
     }
 

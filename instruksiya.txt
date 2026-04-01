@@ -1,7 +1,7 @@
 Rollar:
 
 1. Super Admin  - Hamma dostup bor
-2. Rektor - pulnkantrakt masalalridan tashqari hamma dostup
+2. Rektor - pul, kantrakt masalalridan tashqari hamma dostup
 3. Zamdekan - faqat ozini fakultetiga tegishli barcha ishlar
 4. Teacher - studentlaga vazifa yuklaydi, baho qoyadi
 5. Student - vazifasini topshiradi

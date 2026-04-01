@@ -1,5 +1,7 @@
 package uz.java.spring_boot_application.service;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -8,6 +10,11 @@ import uz.java.spring_boot_application.entities.User;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.repository.UserRepository;
 import uz.java.spring_boot_application.security.CustomUserDetails;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 
 @Service
 public class CustomUserDetailService implements UserDetailsService {
@@ -23,6 +30,15 @@ public class CustomUserDetailService implements UserDetailsService {
         User user = userRepository.findByUsername(username);
         if (user == null)
             throw new GenericNotFoundException("user.not.found");
-        return new CustomUserDetails(user);
+
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        if (Objects.nonNull(user.getRoles()))
+            user.getRoles().forEach(role -> {
+                authorities.add(authority.apply(role.getAuthority()));
+            });
+        return new CustomUserDetails(user, authorities);
     }
+
+    private final static Function<String, SimpleGrantedAuthority> authority = SimpleGrantedAuthority::new;
+
 }

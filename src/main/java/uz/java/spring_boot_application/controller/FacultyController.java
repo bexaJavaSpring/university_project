@@ -3,6 +3,7 @@ package uz.java.spring_boot_application.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.java.spring_boot_application.dto.faculty.FacultyFilter;
 import uz.java.spring_boot_application.dto.faculty.FacultyRequest;
@@ -19,6 +20,7 @@ public class FacultyController {
     private FacultyService facultyService;
 
     @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('ROLE_REKTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<List<FacultyResponse>> getAll(@RequestParam Integer page,
                                                         @RequestParam Integer limit,
                                                         @RequestParam(required = false) String sortBy,
@@ -28,23 +30,26 @@ public class FacultyController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('REKTOR', 'SUPER_ADMIN', 'ZAMDEKAN')")
     public ResponseEntity<FacultyResponse> getOne(@PathVariable Long id) {
         return ResponseEntity.ok(facultyService.getOne(id));
     }
 
     @PostMapping
-//    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('REKTOR', 'SUPER_ADMIN')")
     public ResponseEntity<Long> create(@RequestBody @Valid FacultyRequest request) {
         return ResponseEntity.ok(facultyService.create(request));
     }
 
-    @PutMapping("/{id}")  // ? bu lyuboy tipni qabul qiladi noaniq degani
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_REKTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<?> update(@PathVariable Long id,
                                     @RequestBody FacultyRequest request) {
         return ResponseEntity.ok(facultyService.update(id, request));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_REKTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return ResponseEntity.ok(facultyService.delete(id));
     }
