@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/university")
-@PreAuthorize("hasRole('SUPER_ADMIN')")
+@PreAuthorize("hasRole('SUPER_ADMIN')") // @Preauthorize automatik 'ROLE_' degan prefix qoshadi
 public class UniversityController {
 
     // Constructor-based DI(Dependency Injection)

@@ -1,5 +1,7 @@
 package uz.java.spring_boot_application.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +20,11 @@ import java.time.LocalDateTime;
 @Setter
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
+@JsonIgnoreProperties(
+        value = {"createdBy", "updatedBy",
+                "createdAt", "updatedAt"},
+        allowGetters = true
+)
 public abstract class Auditable {
 
     @Id
@@ -26,10 +33,12 @@ public abstract class Auditable {
 
     @CreationTimestamp
     @Column(name = "created_at")
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
     @Column(name = "is_deleted", columnDefinition = "BOOLEAN DEFAULT FALSE")
@@ -40,10 +49,12 @@ public abstract class Auditable {
 
     @CreatedBy
     @Column(name = "created_by")
+    @JsonIgnore
     private Long createdBy;
 
     @LastModifiedBy
     @Column(name = "updated_by")
+    @JsonIgnore
     private Long updatedBy;
 // soft delete uchun
     public void markAsDeleted() {

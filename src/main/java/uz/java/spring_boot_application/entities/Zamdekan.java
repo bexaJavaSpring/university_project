@@ -15,7 +15,7 @@ import lombok.Setter;
 @PrimaryKeyJoinColumn(name = "user_id")
 public class Zamdekan extends User {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 }

@@ -9,14 +9,14 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import java.util.Locale;
 @Configuration
 public class LocalConfig {
-    @Bean
+    @Bean  // sessiyadagi tilni nastroykasi(configuratsiyasi)
     public LocaleResolver localeResolver() {
         SessionLocaleResolver localeResolver = new SessionLocaleResolver();
         localeResolver.setDefaultLocale(new Locale("uz"));
         return localeResolver;
     }
 
-    @Bean
+    @Bean  // ResourceBundleMessageSource -> message uchun 3ta tilda saqlanadigan configuratsiya
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource rs = new ResourceBundleMessageSource();
         rs.setBasename("messages");

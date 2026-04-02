@@ -69,6 +69,7 @@ public class GlobalFilter extends OncePerRequestFilter {
     }
 
     private void authenticate(HttpServletRequest request, CustomUserDetails userDetails) {
+        // user malumotlari va authoritylari(role, permission) sessiyaga saqlash joyi
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);

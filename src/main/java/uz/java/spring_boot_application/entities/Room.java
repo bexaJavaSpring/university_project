@@ -19,7 +19,7 @@ public class Room extends Auditable {
     @Column(name = "room_number")
     private String roomNumber;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
 }

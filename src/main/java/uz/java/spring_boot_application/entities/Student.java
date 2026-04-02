@@ -20,7 +20,7 @@ public class Student extends User {
     @Column(name = "student_status")
     private String studentStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", referencedColumnName = "id")
     private Group group;
 }

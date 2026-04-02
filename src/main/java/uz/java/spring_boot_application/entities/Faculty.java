@@ -20,13 +20,13 @@ public class Faculty extends Auditable {
     private String address;
 
     // Unidirectional usul
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "university_id", nullable = false)
     private University university;
 
 
-
-
+// Lazy - dangasa
+// Eager - ishtiyoqli
 
 
 //    @ManyToOne  // @OneToMany Bidirectioanl usulni 2 tomonlama turini davomi
