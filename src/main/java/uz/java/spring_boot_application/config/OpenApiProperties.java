@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "api.info")
+@ConfigurationProperties(prefix = "api.info") // application.properties dan olib keladi malumotlani
 public class OpenApiProperties {
     private String title;
     private String version;
