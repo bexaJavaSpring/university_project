@@ -219,72 +219,66 @@
     <changeSet id="1775503509690-18" author="Alibek">
         <addForeignKeyConstraint baseTableName="faculties" baseColumnNames="university_id"
                                  constraintName="FK_FACULTY_ON_UNIVERSITY"
-                referencedTableName="universities" referencedColumnNames="id"
-                deferrable="true" initiallyDeferred="true"/>
+                referencedTableName="universities" referencedColumnNames="id"/>
     </changeSet>
     <changeSet id="1775503509690-19" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="faculty_id" baseTableName="groups"
                                  constraintName="FK_GROUPS_ON_FACULTY" referencedColumnNames="id"
-                                 referencedTableName="faculties" deferrable="true" initiallyDeferred="true"/>
+                                 referencedTableName="faculties"/>
     </changeSet>
     <changeSet id="1775503509690-20" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="rooms" constraintName="FK_ROOMS_ON_GROUP"
-                                 referencedColumnNames="id" referencedTableName="groups" deferrable="true" initiallyDeferred="true"/>
+                                 referencedColumnNames="id" referencedTableName="groups"/>
     </changeSet>
     <changeSet id="1775503509690-21" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="session_users"
                                  constraintName="FK_SESSION_USERS_ON_USER" referencedColumnNames="id"
-                                 referencedTableName="users" deferrable="true" initiallyDeferred="true"/>
+                                 referencedTableName="users"/>
     </changeSet>
     <changeSet id="1775503509690-22" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="students"
                                  constraintName="FK_STUDENTS_ON_GROUP" referencedColumnNames="id"
-                                 referencedTableName="groups" deferrable="true" initiallyDeferred="true"/>
+                                 referencedTableName="groups"/>
     </changeSet>
     <changeSet id="1775503509690-23" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="students" constraintName="FK_STUDENTS_ON_USER"
-                                 referencedColumnNames="id" referencedTableName="users" deferrable="true"
-        initiallyDeferred="true"/>
+                                 referencedColumnNames="id" referencedTableName="users"/>
     </changeSet>
     <changeSet id="1775503509690-24" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="faculty_id" baseTableName="teachers"
                                  constraintName="FK_TEACHERS_ON_FACULTY" referencedColumnNames="id"
-                                 referencedTableName="faculties" deferrable="true" initiallyDeferred="true"/>
+                                 referencedTableName="faculties"/>
     </changeSet>
     <changeSet id="1775503509690-25" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="subject_id" baseTableName="teachers"
                                  constraintName="FK_TEACHERS_ON_SUBJECT" referencedColumnNames="id"
-                                 referencedTableName="subjects" deferrable="true" initiallyDeferred="true"/>
+                                 referencedTableName="subjects"/>
     </changeSet>
     <changeSet id="1775503509690-26" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="teachers" constraintName="FK_TEACHERS_ON_USER"
-                                 referencedColumnNames="id" referencedTableName="users" deferrable="true"
-        initiallyDeferred="true"/>
+                                 referencedColumnNames="id" referencedTableName="users"/>
     </changeSet>
     <changeSet id="1775503509690-27" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="faculty_id" baseTableName="zamdekan"
                                  constraintName="FK_ZAMDEKAN_ON_FACULTY" referencedColumnNames="id"
-                                 referencedTableName="faculties" deferrable="true" initiallyDeferred="true"/>
+                                 referencedTableName="faculties"/>
     </changeSet>
     <changeSet id="1775503509690-28" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="zamdekan" constraintName="FK_ZAMDEKAN_ON_USER"
-                                 referencedColumnNames="id" referencedTableName="users" deferrable="true"
-        initiallyDeferred="true"/>
+                                 referencedColumnNames="id" referencedTableName="users"/>
     </changeSet>
     <changeSet id="1775503509690-29" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="university_id" baseTableName="university_attachment_urls"
                                  constraintName="fk_university_attachmenturls_on_university" referencedColumnNames="id"
-                                 referencedTableName="universities" deferrable="true" initiallyDeferred="true"/>
+                                 referencedTableName="universities"/>
     </changeSet>
     <changeSet id="1775503509690-30" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user_roles" constraintName="fk_userol_on_role"
-                                 referencedColumnNames="id" referencedTableName="roles" deferrable="true"
-        initiallyDeferred="true"/>
+                                 referencedColumnNames="id" referencedTableName="roles"/>
     </changeSet>
     <changeSet id="1775503509690-31" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_roles" constraintName="fk_userol_on_user"
-                                 referencedColumnNames="id" referencedTableName="users"
-        deferrable="true" initiallyDeferred="true"/>
+                                 referencedColumnNames="id" referencedTableName="users"/>
     </changeSet>
 
     <!--     hozirgi database structure change lari shu file da-->
