@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- db.changelog-v1.0.2-init.xml -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+    <!-- Changeset 1: Create tag only -->
+    <changeSet id="v1.0.2-tag" author="bekhruz_web">
+        <tagDatabase tag="baseline-v1.0.2"/>
+    </changeSet>
+
+    <changeSet id="1775503509690-1" author="Alibek">
+        <createTable tableName="faculties">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_faculties"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="created_by" type="BIGINT"/>
+            <column name="updated_by" type="BIGINT"/>
+            <column name="nomi" type="VARCHAR(100)"/>
+            <column name="add" type="VARCHAR(255)"/>
+            <column name="university_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+    <changeSet id="1775503509690-2" author="Alibek">
+        <createTable tableName="groups">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_groups"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="created_by" type="BIGINT"/>
+            <column name="updated_by" type="BIGINT"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="group_number" type="VARCHAR(255)"/>
+            <column name="faculty_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775503509690-3" author="Alibek">
+        <createTable tableName="roles">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_roles"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="created_by" type="BIGINT"/>
+            <column name="updated_by" type="BIGINT"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="code" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775503509690-4" author="Alibek">
+        <createTable tableName="rooms">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_rooms"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="created_by" type="BIGINT"/>
+            <column name="updated_by" type="BIGINT"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="room_number" type="VARCHAR(255)"/>
+            <column name="group_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775503509690-5" author="Alibek">
+        <createTable tableName="session_users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_session_users"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="created_by" type="BIGINT"/>
+            <column name="updated_by" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+            <column name="access_token" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="refresh_token" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775503509690-6" author="Alibek">
+        <createTable tableName="students">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_students"/>
+            </column>
+            <column name="age" type="INT"/>
+            <column name="student_status" type="VARCHAR(255)"/>
+            <column name="group_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775503509690-7" author="Alibek">
+        <createTable tableName="subjects">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_subjects"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="created_by" type="BIGINT"/>
+            <column name="updated_by" type="BIGINT"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775503509690-8" author="Alibek">
+        <createTable tableName="teachers">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teachers"/>
+            </column>
+            <column name="salary" type="DOUBLE"/>
+            <column name="qualification" type="VARCHAR(255)"/>
+            <column name="experience" type="VARCHAR(255)"/>
+            <column name="subject_id" type="BIGINT"/>
+            <column name="faculty_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775503509690-9" author="Alibek">
+        <createTable tableName="universities">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_universities"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="created_by" type="BIGINT"/>
+            <column name="updated_by" type="BIGINT"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="website" type="VARCHAR(255)"/>
+            <column name="logo" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775503509690-10" author="Alibek">
+        <createTable tableName="university_attachment_urls">
+            <column name="university_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attachment_urls" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775503509690-11" author="Alibek">
+        <createTable tableName="user_roles">
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_roles"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_roles"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775503509690-12" author="Alibek">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="created_by" type="BIGINT"/>
+            <column name="updated_by" type="BIGINT"/>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+            <column name="gender" type="VARCHAR(255)"/>
+            <column name="birth_date" type="DATE"/>
+            <column name="address" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775503509690-13" author="Alibek">
+        <createTable tableName="zamdekan">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zamdekan"/>
+            </column>
+            <column name="faculty_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775503509690-14" author="Alibek">
+        <addUniqueConstraint columnNames="nomi" constraintName="uc_faculties_nomi" tableName="faculties"/>
+    </changeSet>
+    <changeSet id="1775503509690-15" author="Alibek">
+        <addUniqueConstraint columnNames="user_id" constraintName="uc_session_users_user" tableName="session_users"/>
+    </changeSet>
+    <changeSet id="1775503509690-16" author="Alibek">
+        <addUniqueConstraint columnNames="subject_id" constraintName="uc_teachers_subject" tableName="teachers"/>
+    </changeSet>
+    <changeSet id="1775503509690-17" author="Alibek">
+        <addUniqueConstraint columnNames="username" constraintName="uc_users_username" tableName="users"/>
+    </changeSet>
+
+    <changeSet id="1775503509690-18" author="Alibek">
+        <addForeignKeyConstraint baseTableName="faculties" baseColumnNames="university_id"
+                                 constraintName="FK_FACULTY_ON_UNIVERSITY"
+                referencedTableName="universities" referencedColumnNames="id"
+                deferrable="true" initiallyDeferred="true"/>
+    </changeSet>
+    <changeSet id="1775503509690-19" author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="faculty_id" baseTableName="groups"
+                                 constraintName="FK_GROUPS_ON_FACULTY" referencedColumnNames="id"
+                                 referencedTableName="faculties" deferrable="true" initiallyDeferred="true"/>
+    </changeSet>
+    <changeSet id="1775503509690-20" author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="rooms" constraintName="FK_ROOMS_ON_GROUP"
+                                 referencedColumnNames="id" referencedTableName="groups" deferrable="true" initiallyDeferred="true"/>
+    </changeSet>
+    <changeSet id="1775503509690-21" author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="session_users"
+                                 constraintName="FK_SESSION_USERS_ON_USER" referencedColumnNames="id"
+                                 referencedTableName="users" deferrable="true" initiallyDeferred="true"/>
+    </changeSet>
+    <changeSet id="1775503509690-22" author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="students"
+                                 constraintName="FK_STUDENTS_ON_GROUP" referencedColumnNames="id"
+                                 referencedTableName="groups" deferrable="true" initiallyDeferred="true"/>
+    </changeSet>
+    <changeSet id="1775503509690-23" author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="students" constraintName="FK_STUDENTS_ON_USER"
+                                 referencedColumnNames="id" referencedTableName="users" deferrable="true"
+        initiallyDeferred="true"/>
+    </changeSet>
+    <changeSet id="1775503509690-24" author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="faculty_id" baseTableName="teachers"
+                                 constraintName="FK_TEACHERS_ON_FACULTY" referencedColumnNames="id"
+                                 referencedTableName="faculties" deferrable="true" initiallyDeferred="true"/>
+    </changeSet>
+    <changeSet id="1775503509690-25" author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="subject_id" baseTableName="teachers"
+                                 constraintName="FK_TEACHERS_ON_SUBJECT" referencedColumnNames="id"
+                                 referencedTableName="subjects" deferrable="true" initiallyDeferred="true"/>
+    </changeSet>
+    <changeSet id="1775503509690-26" author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="teachers" constraintName="FK_TEACHERS_ON_USER"
+                                 referencedColumnNames="id" referencedTableName="users" deferrable="true"
+        initiallyDeferred="true"/>
+    </changeSet>
+    <changeSet id="1775503509690-27" author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="faculty_id" baseTableName="zamdekan"
+                                 constraintName="FK_ZAMDEKAN_ON_FACULTY" referencedColumnNames="id"
+                                 referencedTableName="faculties" deferrable="true" initiallyDeferred="true"/>
+    </changeSet>
+    <changeSet id="1775503509690-28" author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="zamdekan" constraintName="FK_ZAMDEKAN_ON_USER"
+                                 referencedColumnNames="id" referencedTableName="users" deferrable="true"
+        initiallyDeferred="true"/>
+    </changeSet>
+    <changeSet id="1775503509690-29" author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="university_id" baseTableName="university_attachment_urls"
+                                 constraintName="fk_university_attachmenturls_on_university" referencedColumnNames="id"
+                                 referencedTableName="universities" deferrable="true" initiallyDeferred="true"/>
+    </changeSet>
+    <changeSet id="1775503509690-30" author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user_roles" constraintName="fk_userol_on_role"
+                                 referencedColumnNames="id" referencedTableName="roles" deferrable="true"
+        initiallyDeferred="true"/>
+    </changeSet>
+    <changeSet id="1775503509690-31" author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_roles" constraintName="fk_userol_on_user"
+                                 referencedColumnNames="id" referencedTableName="users"
+        deferrable="true" initiallyDeferred="true"/>
+    </changeSet>
+
+    <!--     hozirgi database structure change lari shu file da-->
+
+
+</databaseChangeLog>

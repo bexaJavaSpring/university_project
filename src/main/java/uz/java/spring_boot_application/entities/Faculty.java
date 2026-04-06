@@ -17,7 +17,7 @@ public class Faculty extends Auditable {
     @Column(unique = true, /*nullable = false*/  length = 100, name = "nomi")
     private String name;
 
-    private String address;
+    private String add;
 
     // Unidirectional usul
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

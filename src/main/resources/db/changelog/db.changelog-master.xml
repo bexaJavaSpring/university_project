@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Version 1.0.0: Initialize Liquibase with test table -->
+    <include file="db/changelog/db.changelog-v1.0.0-init.xml"/>
+
+    <!-- Version 1.0.1: Mark existing DDL as executed -->
+    <include file="/db/changelog/db.changelog-v1.0.1-mark-baseline.xml"/>
+
+    <!-- Version 1.0.2: Existing DDL (will be skipped) -->
+    <include file="db/changelog/db.changelog-v1.0.2-baseline.xml"/>
+
+    <!-- Version 1.0.3: Cleanup test table -->
+    <include file="db/changelog/db.changelog-v1.0.3-log-cleanup.xml"/>
+
+
+    <!-- Version 2.0.0: mew changes -->
+    <include file="db/changelog/db.changelog-v2.0.0-new-changes.xml"/>
+    <include file="db/changelog/db.changelog-v1.0.2-baseline.xml"/>
+
+</databaseChangeLog>

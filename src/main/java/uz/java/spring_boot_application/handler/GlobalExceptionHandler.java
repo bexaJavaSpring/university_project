@@ -8,6 +8,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import uz.java.spring_boot_application.exception.CustomAccessDeniedException;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.util.Translator;
@@ -15,7 +16,7 @@ import uz.java.spring_boot_application.util.Translator;
 import java.util.List;
 import java.util.Map;
 
-@ControllerAdvice
+@RestControllerAdvice
 //@Slf4j
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
@@ -25,7 +26,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleError(final MethodArgumentNotValidException ex) {
 //        log.error("MethodArgumentNotValidException on: {}", ErrorUtil.getStacktrace(ex));
-        String message = ex.getMessage();
+        String message = translator.toLocale(ex.getMessage());
         return new ResponseEntity<>(Map.of("message", message), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 

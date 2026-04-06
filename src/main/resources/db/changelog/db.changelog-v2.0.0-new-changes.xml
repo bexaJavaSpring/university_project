@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- db.changelog-v1.0.3-log-cleanup.xml -->
+<!-- NOTE: barcha yangi o'zgrishlar shu versiyadan boshlanadi -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="v2.0.0-new-changes" author="bekhruz_web">
+        <tagDatabase tag="v2.0.0-new-changes"/>
+    </changeSet>
+</databaseChangeLog>

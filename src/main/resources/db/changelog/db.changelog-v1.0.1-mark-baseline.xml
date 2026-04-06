@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- db.changelog-v1.0.1-mark-baseline.xml -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="v1.0.1-mark-baseline-executed" author="bekhruz_web">
+        <sql>
+
+            INSERT INTO university_app_liquibase.databasechangelog
+            (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, EXECTYPE, MD5SUM, DESCRIPTION, CONTEXTS, LIQUIBASE, TAG, DEPLOYMENT_ID)
+            VALUES
+                ('v1.0.2-tag', 'a1549a (generated)', 'db/changelog/db.changelog-v1.0.2-baseline.xml', NOW(), 2, 'EXECUTED',
+                 '8:5b8e9098120479e10f73843a2edf434d',
+                 'tagDatabase', NULL, '4.20.0', 'baseline-v1.0.2', 1),
+                ('v1.0.2-baseline-all', 'a1549a (generated)', 'db/changelog/db.changelog-v1.0.2-baseline.xml', NOW(), 3, 'EXECUTED',
+                 '8:179567e630625a6b35bc1bc8d9297a34',
+                 'createTable (all existing)', NULL, '4.20.0', NULL, 1);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -33,6 +33,7 @@ import static uz.java.spring_boot_application.config.SecurityConfig.AUTH_WHITELI
 @RequiredArgsConstructor
 public class GlobalFilter extends OncePerRequestFilter {
 
+//    private static final Logger logger = Logger.getLogger(GlobalFilter.class.getName());
     private final JwtTokenService jwtTokenService;
     private final CustomUserDetailService userDetailsService;
     private final LocaleResolver localeResolver;
@@ -40,6 +41,8 @@ public class GlobalFilter extends OncePerRequestFilter {
     @Autowired
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver resolver;
+    // HandlerExceptionResolver class agar global filter ichida exception tashlasa
+    // faqatgina GloabalExceptionHandler ni yetarli bolmaydi va shu class yordam beradi
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
