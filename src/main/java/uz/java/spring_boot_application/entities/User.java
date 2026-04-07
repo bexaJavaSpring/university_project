@@ -32,6 +32,7 @@ public class User extends Auditable {
 
     private String password;
 
+    @Column(unique = true)
     private String phone;
 
     @Enumerated(EnumType.STRING) // bu annotatsiya Data jpa da shu field enum ligini bildiradi

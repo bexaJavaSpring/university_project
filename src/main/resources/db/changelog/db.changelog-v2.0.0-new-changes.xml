@@ -10,4 +10,14 @@
     <changeSet id="v2.0.0-new-changes" author="bekhruz_web">
         <tagDatabase tag="v2.0.0-new-changes"/>
     </changeSet>
+
+    <changeSet id="1775537581641-1" author="bekhruzbey">
+        <addColumn tableName="faculties">
+            <column name="phone" type="varchar"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="000111" author="bekhruzbey">
+        <addUniqueConstraint tableName="users" columnNames="phone"/>
+    </changeSet>
+
 </databaseChangeLog>

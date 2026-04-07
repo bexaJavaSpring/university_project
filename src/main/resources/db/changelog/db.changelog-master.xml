@@ -17,6 +17,7 @@
     <!-- Version 1.0.3: Cleanup test table -->
     <include file="db/changelog/db.changelog-v1.0.3-log-cleanup.xml"/>
 
+    <include file="db/changelog/db.changelog-insert-data.xml"/>
 
     <!-- Version 2.0.0: mew changes -->
     <include file="db/changelog/db.changelog-v2.0.0-new-changes.xml"/>

@@ -24,6 +24,7 @@ public class Faculty extends Auditable {
     @JoinColumn(name = "university_id", nullable = false)
     private University university;
 
+    private String phone;
 
 // Lazy - dangasa
 // Eager - ishtiyoqli
