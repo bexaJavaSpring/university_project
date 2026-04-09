@@ -27,4 +27,9 @@
             <column name="code" value="ROLE_TEACHER"/>
         </insert>
     </changeSet>
+    <changeSet id="1775763456819-1" author="mirzobaqo">
+        <createTable tableName="homework">
+            <column name="id"></column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
