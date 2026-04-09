@@ -37,6 +37,183 @@
             <column name="content_type" type="VARCHAR"/>
             <column name="size" type="BIGINT"/>
         </createTable>
+
+    </changeSet>
+    <changeSet id="1775765824126-1"
+               author="Alibek">
+        <createTable tableName="attachment">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_attachment"/>
+            </column>
+            <column name="created_at"
+                    type="DATETIME"/>
+            <column name="updated_at"
+                    type="DATETIME"/>
+            <column defaultValueBoolean="false"
+                    name="is_deleted"
+                    type="BOOLEAN"/>
+            <column name="deleted_at"
+                    type="DATETIME"/>
+            <column name="created_by"
+                    type="BIGINT"/>
+            <column name="updated_by"
+                    type="BIGINT"/>
+            <column name="name"
+                    type="VARCHAR(255)"/>
+            <column name="original_name"
+                    type="VARCHAR(255)"/>
+            <column name="size"
+                    type="BIGINT"/>
+            <column name="content_type"
+                    type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775765860673-1"
+               author="Alibek">
+        <createTable tableName="attachment_content">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_attachment_content"/>
+            </column>
+            <column name="bytes"
+                    type="BLOB"/>
+            <column name="attachment_id"
+                    type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775765860673-2"
+               author="Alibek">
+        <addUniqueConstraint columnNames="attachment_id"
+                             constraintName="uc_attachment_content_attachment"
+                             tableName="attachment_content"/>
+    </changeSet>
+    <changeSet id="1775765860673-3"
+               author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="attachment_id"
+                                 baseTableName="attachment_content"
+                                 constraintName="FK_ATTACHMENT_CONTENT_ON_ATTACHMENT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="attachment"/>
+    </changeSet>
+    <changeSet id="1775765350992-1"
+               author="Alibek">
+        <createTable tableName="homework">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_homework"/>
+            </column>
+            <column name="created_at"
+                    type="DATETIME"/>
+            <column name="updated_at"
+                    type="DATETIME"/>
+            <column defaultValueBoolean="false"
+                    name="is_deleted"
+                    type="BOOLEAN"/>
+            <column name="deleted_at"
+                    type="DATETIME"/>
+            <column name="created_by"
+                    type="BIGINT"/>
+            <column name="updated_by"
+                    type="BIGINT"/>
+            <column name="title"
+                    type="VARCHAR(255)"/>
+            <column name="description"
+                    type="VARCHAR(255)"/>
+            <column name="deadline"
+                    type="DATETIME"/>
+            <column name="teacher_id"
+                    type="BIGINT"/>
+            <column name="file_id"
+                    type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1775765350992-2"
+               author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="file_id"
+                                 baseTableName="homework"
+                                 constraintName="FK_HOMEWORK_ON_FILE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="attachment"/>
+    </changeSet>
+    <changeSet id="1775765350992-3"
+               author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="teacher_id"
+                                 baseTableName="homework"
+                                 constraintName="FK_HOMEWORK_ON_TEACHER"
+                                 referencedColumnNames="user_id"
+                                 referencedTableName="teachers"/>
+    </changeSet>
+
+
+    <changeSet id="1775765886825-1"
+               author="Alibek">
+        <createTable tableName="submission">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_submission"/>
+            </column>
+            <column name="created_at"
+                    type="DATETIME"/>
+            <column name="updated_at"
+                    type="DATETIME"/>
+            <column defaultValueBoolean="false"
+                    name="is_deleted"
+                    type="BOOLEAN"/>
+            <column name="deleted_at"
+                    type="DATETIME"/>
+            <column name="created_by"
+                    type="BIGINT"/>
+            <column name="updated_by"
+                    type="BIGINT"/>
+            <column name="homework_id"
+                    type="BIGINT"/>
+            <column name="student_id"
+                    type="BIGINT"/>
+            <column name="file_id"
+                    type="BIGINT"/>
+            <column name="text_answer"
+                    type="VARCHAR(255)"/>
+            <column name="score"
+                    type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1775765886825-2"
+               author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="file_id"
+                                 baseTableName="submission"
+                                 constraintName="FK_SUBMISSION_ON_FILE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="attachment"/>
+    </changeSet>
+    <changeSet id="1775765886825-3"
+               author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="homework_id"
+                                 baseTableName="submission"
+                                 constraintName="FK_SUBMISSION_ON_HOMEWORK"
+                                 referencedColumnNames="id"
+                                 referencedTableName="homework"/>
+    </changeSet>
+    <changeSet id="1775765886825-4"
+               author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="student_id"
+                                 baseTableName="submission"
+                                 constraintName="FK_SUBMISSION_ON_STUDENT"
+                                 referencedColumnNames="user_id"
+                                 referencedTableName="students"/>
     </changeSet>
 
 </databaseChangeLog>

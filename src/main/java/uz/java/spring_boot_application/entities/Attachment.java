@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Attachment extends Auditable{
+public class Attachment extends Auditable {
     private String name;
     private String originalName;
     private Long size;
