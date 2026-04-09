@@ -39,6 +39,7 @@ public class SecurityConfig {
             "/webjars/**",
             "/webjars",
             "/auth/login",
+            "/files/upload",
 
     };
     //     Basic authorization
