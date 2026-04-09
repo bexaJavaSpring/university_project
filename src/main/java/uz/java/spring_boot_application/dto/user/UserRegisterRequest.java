@@ -1,4 +1,4 @@
-package uz.java.spring_boot_application.dto;
+package uz.java.spring_boot_application.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

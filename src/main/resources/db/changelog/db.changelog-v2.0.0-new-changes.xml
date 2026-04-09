@@ -20,4 +20,23 @@
         <addUniqueConstraint tableName="users" columnNames="phone"/>
     </changeSet>
 
+    <changeSet id="1775760747073-1" author="bekhruz_web">
+        <createTable tableName="file_entity">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_file_entity"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="created_by" type="BIGINT"/>
+            <column name="updated_by" type="BIGINT"/>
+            <column name="path" type="VARCHAR"/>
+            <column name="name" type="VARCHAR"/>
+            <column name="object_name" type="VARCHAR"/>
+            <column name="content_type" type="VARCHAR"/>
+            <column name="size" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
