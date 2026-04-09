@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  minio:
+    image: quay.io/minio/minio
+    container_name: minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    environment:
+      MINIO_ROOT_USER: admin_username
+      MINIO_ROOT_PASSWORD: adminpassword123
+    command: server /data --console-address ":9001"
+    networks:
+      - university-net
+
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: code
+      POSTGRES_DB: spring_boot_app
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5433"
+    networks:
+      - university-net
+
+volumes:
+  minio_data:
+  pg_data:
+
+networks:
+  university-net:
+    driver: bridge

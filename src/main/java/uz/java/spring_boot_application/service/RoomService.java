@@ -1,14 +1,16 @@
 package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import uz.java.spring_boot_application.dto.room.RoomFilter;
 import uz.java.spring_boot_application.dto.room.RoomRequest;
 import uz.java.spring_boot_application.dto.room.RoomResponse;
 import uz.java.spring_boot_application.entities.Room;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.mapper.RoomMapper;
 import uz.java.spring_boot_application.repository.RoomRepository;
+import uz.java.spring_boot_application.specification.RoomSpecification;
+import uz.java.spring_boot_application.specification.SearchSpecification;
 
 import java.util.List;
 
@@ -19,12 +21,13 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomMapper roomMapper;
 
-    public List<RoomResponse> getAll() {
-        List<RoomResponse> list = roomRepository.findAll().stream().map(
-                roomMapper::toResponse
-        ).toList();
+    public List<RoomResponse> getAll(RoomFilter filter) {
+        RoomSpecification spec = new RoomSpecification(filter);
+        List<Room> list = roomRepository.findAll(spec, SearchSpecification.getPageable(
+                filter.getPage(), filter.getLimit(), filter.getSortBy()
+        )).toList();
 
-        return list;
+        return list.stream().map(roomMapper::toResponse).toList();
     }
 
     public RoomResponse getOne(Long id) {
