@@ -3,6 +3,7 @@ package uz.java.spring_boot_application.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uz.java.spring_boot_application.dto.room.RoomFilter;
 import uz.java.spring_boot_application.dto.room.RoomRequest;
 import uz.java.spring_boot_application.entities.Room;
 import uz.java.spring_boot_application.service.RoomService;
@@ -17,8 +18,13 @@ public class RoomController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(roomService.getAll());
+    public ResponseEntity<?> getAll(@RequestParam Integer page,
+                                    @RequestParam Integer limit,
+                                    @RequestParam(required = false) String sortBy,
+                                    @RequestParam(required = false) String name,
+                                    @RequestParam(required = false) String roomNumber,
+                                    @RequestParam(required = false) Long groupId) {
+        return ResponseEntity.ok(roomService.getAll(new RoomFilter(page, limit, sortBy, name, roomNumber, groupId)));
     }
 
     @GetMapping("/{id}")
