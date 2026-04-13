@@ -2,6 +2,7 @@ package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.dto.room.RoomFilter;
 import uz.java.spring_boot_application.dto.room.RoomRequest;
 import uz.java.spring_boot_application.dto.room.RoomResponse;
@@ -37,13 +38,13 @@ public class RoomService {
 
         return  roomMapper.toResponse(room);
     }
-
+    @Transactional
     public Long create(RoomRequest roomRequest) {
         Room entity = roomMapper.toEntity(roomRequest);
         Room save = roomRepository.save(entity);
         return save.getId();
     }
-
+    @Transactional
     public Long update(RoomRequest roomRequest, Long id) {
         Room room = roomRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("room.not.found")
@@ -51,7 +52,7 @@ public class RoomService {
         roomMapper.updateFromRequest(roomRequest, room);
         return roomRepository.save(room).getId();
     }
-
+    @Transactional
     public Boolean delete(Long id) {
         Room room = roomRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("room.not.found")

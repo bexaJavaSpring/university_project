@@ -2,6 +2,7 @@ package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.dto.student.StudentRequest;
 import uz.java.spring_boot_application.dto.student.StudentResponse;
 import uz.java.spring_boot_application.entities.Student;
@@ -31,13 +32,13 @@ public class StudentService {
         return studentMapper.toResponse(student);
     }
 
-
+    @Transactional
     public Long create(StudentRequest request) {
         Student entity = studentMapper.toEntity(request);
         Student save = studentRepository.save(entity);
         return save.getId();
     }
-
+    @Transactional
     public Long update(Long id, StudentRequest request) {
         Student student = studentRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("student.not.found")
@@ -47,7 +48,7 @@ public class StudentService {
         Student save = studentRepository.save(student);
         return save.getId();
     }
-
+    @Transactional
     public Boolean delete(Long id) {
         Student student = studentRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("student.not.found")

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.dto.university.UniversityFilter;
 import uz.java.spring_boot_application.dto.university.UniversityRequest;
 import uz.java.spring_boot_application.dto.university.UniversityResponse;
@@ -32,6 +33,7 @@ public class UniversityService {
     private final ZamdekanRepository zamdekanRepository;
     private final FacultyRepository facultyRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
 
     public List<UniversityResponse> getAll(UniversityFilter filter) {
@@ -58,12 +60,15 @@ public class UniversityService {
         return universityMapper.toResponse(university);
     }
 
+    @Transactional
     public Long create(UniversityRequest request) {
         University university = universityMapper.toEntity(request);
-        University response = universityRepository.save(university);// Alt + Enter bossa o`zgaruvchiga oladi
+        University response = universityRepository.save(university);
+        notificationService.sendNotification("Universitet saqlandi!");
         return response.getId();
     }
 
+    @Transactional
     public Long update(Long universityId, UniversityRequest request) {
         Optional<University> optional = universityRepository.findById(universityId);
         if (!optional.isPresent())
@@ -74,6 +79,7 @@ public class UniversityService {
         return universityId;
     }
 
+    @Transactional
     public Boolean delete(Long universityId) {
         // 1-usul
 //        University university = universityRepository.findById(universityId).orElse(null);
@@ -92,7 +98,7 @@ public class UniversityService {
 //        universityRepository.delete(university);
         return true;
     }
-
+    @Transactional
     public Boolean attachZamdekan(Long facultyId, List<Long> zamdekanIds) {
         Faculty faculty = facultyRepository.findById(facultyId).orElseThrow(
                 () -> new GenericNotFoundException("Faculty not found")

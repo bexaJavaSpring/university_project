@@ -3,6 +3,7 @@ package uz.java.spring_boot_application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import uz.java.spring_boot_application.dto.subject.SubjectFilter;
 import uz.java.spring_boot_application.dto.subject.SubjectRequest;
@@ -20,7 +21,7 @@ import java.util.List;
 public class SubjectService {
     private final SubjectRepository subjectRepository;
     private final SubjectMapper subjectMapper;
-
+    @Transactional
     public Long create(SubjectRequest subjectRequest) {
         Subjects subject = subjectRepository.findById(subjectRequest.getSubjectId()).orElse(null);
         if (subject == null)
@@ -34,7 +35,7 @@ public class SubjectService {
                 filter.getLimit(), filter.getSortBy())).toList();
         return all.stream().map(subjectMapper::toResponse).toList();
     }
-
+    @Transactional
     public Long update(SubjectRequest subjectRequest, Long subjectId) {
         var subject = subjectRepository.findById(subjectRequest.getSubjectId()).orElseThrow(
                 () -> new RuntimeException("Subject not found")
@@ -43,7 +44,7 @@ public class SubjectService {
         subjectMapper.updateFromRequest(subjectRequest, subject);
         return subjectRepository.save(subject).getId();
     }
-
+    @Transactional
     public Boolean delete(Long id) {
         Subjects subject = subjectRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Subject not found")

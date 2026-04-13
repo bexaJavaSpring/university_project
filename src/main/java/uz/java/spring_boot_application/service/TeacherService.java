@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import uz.java.spring_boot_application.dto.user.TeacherFilter;
 import uz.java.spring_boot_application.dto.user.TeacherRequest;
@@ -43,7 +44,7 @@ public class TeacherService {
                 pageRequest);
         return all.stream().map(teacherMapper::toResponse).toList();
     }
-
+    @Transactional
     public Long create(TeacherRequest teacherRequest) {
         Faculty faculty = facultyRepository.findById(teacherRequest.getFacultyId()).orElse(null);
         if (faculty == null)
@@ -54,7 +55,7 @@ public class TeacherService {
         Teacher teacher = teacherMapper.toEntity(teacherRequest);
         return teacherRepository.save(teacher).getId();
     }
-
+    @Transactional
     public Long update(TeacherRequest teacherRequest, Long teacherId) {
         var teacher = teacherRepository.findById(teacherId).orElseThrow(
                 () -> new RuntimeException("Teacher not found")
@@ -73,7 +74,7 @@ public class TeacherService {
         teacherRepository.save(teacher);
         return teacherId;
     }
-
+    @Transactional
     public Boolean delete(Long id) {
         Teacher teacher = teacherRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher not found")

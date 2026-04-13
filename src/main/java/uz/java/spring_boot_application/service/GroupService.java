@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.dto.group.GroupFilter;
 import uz.java.spring_boot_application.dto.group.GroupRequest;
 import uz.java.spring_boot_application.dto.group.GroupResponse;
@@ -39,7 +40,7 @@ public class GroupService {
         );
         return groupMapper.toResponse(group);
     }
-
+    @Transactional
     public Long create(GroupRequest request) {
         facultyRepository.findById(request.getFacultyId()).orElseThrow(
                 () -> new GenericNotFoundException("Faculty not found")
@@ -48,7 +49,7 @@ public class GroupService {
         Group save = groupRepository.save(group);
         return save.getId();
     }
-
+    @Transactional
     public Boolean update(Long id, GroupRequest request) {
         Group group = groupRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("Group not found")
@@ -57,7 +58,7 @@ public class GroupService {
         groupRepository.save(group);
         return true;
     }
-
+    @Transactional
     public Boolean delete(Long id) {
         Group group = groupRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("Group not found")

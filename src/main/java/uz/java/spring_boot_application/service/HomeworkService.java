@@ -2,6 +2,7 @@ package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.config.UserSession;
 import uz.java.spring_boot_application.dto.homework.HomeworkRequestDto;
 import uz.java.spring_boot_application.dto.homework.HomeworkResponseDto;
@@ -22,7 +23,7 @@ public class HomeworkService {
     private final HomeworkMapper homeworkMapper;
     private final UserSession userSession;
     private final TeacherRepository teacherRepository;
-
+    @Transactional
     public Long create(HomeworkRequestDto dto) {
         CustomUserDetails currentUser = userSession.getCurrentUser();
         User user = currentUser.getUser();
@@ -34,7 +35,7 @@ public class HomeworkService {
         Homework homework =homeworkMapper.toEntity(dto);
         return homeworkRepository.save(homework).getId();
     }
-
+    @Transactional
     public Long update(Long id, HomeworkRequestDto dto) {
         Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));
@@ -47,7 +48,7 @@ public class HomeworkService {
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));
         return homeworkMapper.toResponseDto(homework);
     }
-
+    @Transactional
     public boolean delete(Long id) {
         Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));

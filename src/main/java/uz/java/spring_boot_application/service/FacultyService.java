@@ -3,6 +3,7 @@ package uz.java.spring_boot_application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.config.UserSession;
 import uz.java.spring_boot_application.dto.faculty.FacultyFilter;
 import uz.java.spring_boot_application.dto.faculty.FacultyRequest;
@@ -54,7 +55,7 @@ public class FacultyService {
         }
         return mapper.toResponse(faculty);
     }
-
+    @Transactional
     public Long create(FacultyRequest request) {
         universityRepository.findById(request.getUniversityId()).orElseThrow(
                 () -> new GenericNotFoundException("university.not.found")
@@ -63,7 +64,7 @@ public class FacultyService {
         facultyRepository.save(faculty);
         return faculty.getId();
     }
-
+    @Transactional
     public Long update(Long id, FacultyRequest request) {
         var faculty = facultyRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("faculty.not.found")
@@ -78,7 +79,7 @@ public class FacultyService {
         facultyRepository.save(faculty);
         return id;
     }
-
+    @Transactional
     public Boolean delete(Long id) {
         var faculty = facultyRepository.findById(id).orElse(null);
         if (faculty == null)
