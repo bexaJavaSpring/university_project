@@ -1,6 +1,7 @@
 package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import uz.java.spring_boot_application.config.UserSession;
 import uz.java.spring_boot_application.dto.faculty.FacultyFilter;
@@ -25,6 +26,7 @@ public class FacultyService {
 
     private final FacultyRepository facultyRepository;
     private final UniversityRepository universityRepository;
+    @Qualifier("facultyMapper")
     private final FacultyMapper mapper;
     private final UserSession userSession;
     private final ZamdekanRepository zamdekanRepository;

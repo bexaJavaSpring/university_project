@@ -22,13 +22,13 @@ services:
     container_name: postgres
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: code
-      POSTGRES_DB: spring_boot_app
+      POSTGRES_USER: university
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: university
     volumes:
       - pg_data:/var/lib/postgresql/data
     ports:
-      - "5433:5433"
+      - "5432:5432"
     networks:
       - university-net
 
