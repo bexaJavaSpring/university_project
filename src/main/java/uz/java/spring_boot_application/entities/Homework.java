@@ -24,9 +24,13 @@ public class Homework extends Auditable {
     private Teacher teacher;
 
     @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
+
+    @ManyToOne
     @JoinColumn(name = "file_id")
     private Attachment file;
 
     @OneToMany(mappedBy = "homework")
-    private List<Submission> submissions;
+    private List<Submission> submissions;// student yozgan yoki yuborgan javob
 }

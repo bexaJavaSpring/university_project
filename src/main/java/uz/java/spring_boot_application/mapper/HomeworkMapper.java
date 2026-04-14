@@ -9,8 +9,11 @@ import uz.java.spring_boot_application.entities.Homework;
 public interface HomeworkMapper {
 
     @Mapping(source = "fileId", target = "file.id")
+    @Mapping(source = "groupId",target = "group.id")
     Homework toEntity(HomeworkRequestDto dto);
 
+    @Mapping(source = "fileId", target = "file.id")
+    @Mapping(source = "groupId",target = "group.id")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateHomeworkFromDto(HomeworkRequestDto dto, @MappingTarget Homework entity);
 

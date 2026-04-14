@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -29,7 +31,10 @@ public class Teacher extends User {
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
-    @Column(name = "user_id", insertable = false, updatable = false)
-    private Long userId;
+    @ManyToMany
+    @JoinTable(name = "teacher_group",
+    joinColumns = @JoinColumn(name = "teacher_id"),
+    inverseJoinColumns = @JoinColumn(name = "group_id"))
+    private Set<Group> groups;
 
 }

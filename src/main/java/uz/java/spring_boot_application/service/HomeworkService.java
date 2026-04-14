@@ -11,6 +11,7 @@ import uz.java.spring_boot_application.exception.CustomAccessDeniedException;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.mapper.HomeworkMapper;
 import uz.java.spring_boot_application.repository.HomeworkRepository;
+import uz.java.spring_boot_application.repository.StudentRepository;
 import uz.java.spring_boot_application.repository.TeacherRepository;
 import uz.java.spring_boot_application.security.CustomUserDetails;
 
@@ -23,13 +24,20 @@ public class HomeworkService {
     private final HomeworkMapper homeworkMapper;
     private final UserSession userSession;
     private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
     @Transactional
     public Long create(HomeworkRequestDto dto) {
-        CustomUserDetails currentUser = userSession.getCurrentUser();
+        CustomUserDetails currentUser = UserSession.getCurrentUser();
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
         if (list.contains("ROLE_TEACHER")) {
             Teacher teacher = teacherRepository.findBYUsername(user.getUsername());
+
+            boolean hasAccess = teacher.getGroups().stream()
+                    .anyMatch(n->n.getId().equals(dto.getGroupId()));
+            if (!hasAccess) {
+                throw new CustomAccessDeniedException("access denied");
+            }
 
         }
         Homework homework =homeworkMapper.toEntity(dto);
@@ -39,6 +47,19 @@ public class HomeworkService {
     public Long update(Long id, HomeworkRequestDto dto) {
         Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));
+        CustomUserDetails currentUser = userSession.getCurrentUser();
+        User user = currentUser.getUser();
+        List<String> list = user.getRoles().stream().map(Role::getCode).toList();
+        if (list.contains("ROLE_TEACHER")) {
+            Teacher teacher = teacherRepository.findBYUsername(user.getUsername());
+
+            boolean hasAccess = teacher.getGroups().stream()
+                    .anyMatch(n->n.getId().equals(dto.getGroupId()));
+            if (!hasAccess) {
+                throw new CustomAccessDeniedException("access denied");
+            }
+
+        }
         homeworkMapper.updateHomeworkFromDto(dto, homework);
         return homeworkRepository.save(homework).getId();
     }
@@ -46,12 +67,42 @@ public class HomeworkService {
     public HomeworkResponseDto getOne(Long id) {
         Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));
+        CustomUserDetails currentUser = userSession.getCurrentUser();
+        User user = currentUser.getUser();
+        List<String> list = user.getRoles().stream().map(Role::getCode).toList();
+        if (list.contains("ROLE_TEACHER")) {
+            Teacher teacher = teacherRepository.findBYUsername(user.getUsername());
+
+            boolean hasAccess = teacher.getGroups().stream()
+                    .anyMatch(n->n.getId().equals(homework.getGroup().getId()));
+            if (!hasAccess) {
+                throw new CustomAccessDeniedException("access denied");
+            }
+        } else if (list.contains("ROLE_STUDENT")) {
+            Student student = studentRepository.findByUsername(user.getUsername());
+            boolean hasAccess = homework.getGroup().getId().equals(student.getGroup().getId());
+            if (!hasAccess) {
+                throw new CustomAccessDeniedException("access denied");
+            }
+        }
         return homeworkMapper.toResponseDto(homework);
     }
     @Transactional
     public boolean delete(Long id) {
         Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));
+        CustomUserDetails currentUser = userSession.getCurrentUser();
+        User user = currentUser.getUser();
+        List<String> list = user.getRoles().stream().map(Role::getCode).toList();
+        if (list.contains("ROLE_TEACHER")) {
+            Teacher teacher = teacherRepository.findBYUsername(user.getUsername());
+
+            boolean hasAccess = teacher.getGroups().stream()
+                    .anyMatch(n->n.getId().equals(homework.getGroup().getId()));
+            if (!hasAccess) {
+                throw new CustomAccessDeniedException("access denied");
+            }
+        }
         homework.markAsDeleted();
         homeworkRepository.save(homework);
         return true;
