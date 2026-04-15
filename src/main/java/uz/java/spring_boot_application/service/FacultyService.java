@@ -83,6 +83,7 @@ public class FacultyService {
             faculty.setUniversity(university);
         }
         facultyRepository.save(faculty);
+//        cacheManagerService.delete(CachePrefix.FACULTY);
         return id;
     }
 

@@ -43,7 +43,7 @@ public class CacheManagerService {
         return String.format("%s/%s/%s", cachePrefix, key, user.getId());
     }
 
-    public void deleteKafka(String cachePrefix) {
+    public void delete(String cachePrefix) {
         Set<String> allKeys = redisTemplate.keys("*");
         if (!allKeys.isEmpty()) {
             redisTemplate.delete(allKeys.stream()
