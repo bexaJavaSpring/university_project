@@ -2,6 +2,7 @@ package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.config.UserSession;
 import uz.java.spring_boot_application.dto.faculty.FacultyFilter;
 import uz.java.spring_boot_application.dto.faculty.FacultyRequest;
@@ -16,6 +17,7 @@ import uz.java.spring_boot_application.repository.ZamdekanRepository;
 import uz.java.spring_boot_application.security.CustomUserDetails;
 import uz.java.spring_boot_application.specification.FacultySpecification;
 import uz.java.spring_boot_application.specification.SearchSpecification;
+import uz.java.spring_boot_application.util.CachePrefix;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class FacultyService {
     private final FacultyMapper mapper;
     private final UserSession userSession;
     private final ZamdekanRepository zamdekanRepository;
+    private final CacheManagerService cacheManagerService;
 
     public List<FacultyResponse> getAll(FacultyFilter filter) {
         FacultySpecification spec = new FacultySpecification(filter);
@@ -37,7 +40,11 @@ public class FacultyService {
         return all.stream().map(mapper::toResponse).toList();
     }
 
+    @Transactional(readOnly = true)
     public FacultyResponse getOne(Long id) {
+        Object data = cacheManagerService.get(id.toString(), CachePrefix.FACULTY);
+        if (data != null)
+            return (FacultyResponse) data;
         Faculty faculty = facultyRepository.findById(id).orElseThrow(() ->
                 new GenericNotFoundException("faculty.not.found")
         );
@@ -50,7 +57,9 @@ public class FacultyService {
                 throw new CustomAccessDeniedException("access.denied");
             }
         }
-        return mapper.toResponse(faculty);
+        FacultyResponse response = mapper.toResponse(faculty);
+        cacheManagerService.put(id.toString(), CachePrefix.FACULTY, response);
+        return response;
     }
 
     public Long create(FacultyRequest request) {

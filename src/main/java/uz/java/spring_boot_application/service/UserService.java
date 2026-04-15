@@ -1,7 +1,9 @@
 package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import uz.java.spring_boot_application.config.UserSession;
 import uz.java.spring_boot_application.dto.user.UserRequest;
 import uz.java.spring_boot_application.dto.user.UserResponse;
 import uz.java.spring_boot_application.entities.User;
@@ -17,6 +19,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final UserSession userSession;
 
     public List<UserResponse> getAll() {
         List<User> all = userRepository.findAll();

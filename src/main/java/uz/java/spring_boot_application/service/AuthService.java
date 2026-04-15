@@ -1,5 +1,6 @@
 package uz.java.spring_boot_application.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -12,23 +13,32 @@ import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.repository.SessionUserRepository;
 import uz.java.spring_boot_application.repository.UserRepository;
 import uz.java.spring_boot_application.security.CustomUserDetails;
+import uz.java.spring_boot_application.util.CachePrefix;
 
 @Service
+@Slf4j
 public class AuthService {
 
     private final UserRepository userRepository;
     private final SessionUserRepository sessionUserRepository;
     private final JwtTokenService jwtTokenService;
     private final CustomAuthenticationProvider authenticationProvider;
+    private final CacheManagerService cacheManagerService;
 
-    public AuthService(UserRepository userRepository, SessionUserRepository sessionUserRepository, JwtTokenService jwtTokenService, CustomAuthenticationProvider authenticationProvider) {
+    public AuthService(UserRepository userRepository, SessionUserRepository sessionUserRepository, JwtTokenService jwtTokenService, CustomAuthenticationProvider authenticationProvider, CacheManagerService cacheManagerService) {
         this.userRepository = userRepository;
         this.sessionUserRepository = sessionUserRepository;
         this.jwtTokenService = jwtTokenService;
         this.authenticationProvider = authenticationProvider;
+        this.cacheManagerService = cacheManagerService;
     }
 
     public LoginResponse login(String username, String password) {
+        Object data = cacheManagerService.get(username, CachePrefix.USER_LOGIN);
+        if (data != null) {
+            log.warn("LoginResponse found in cache by key: {}", username);
+            return (LoginResponse) data;
+        }
         Authentication authenticate = authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(
                 username, password
         ));
@@ -58,9 +68,11 @@ public class AuthService {
                 .refreshToken(refreshToken)
                 .status(Status.ACTIVE)
                 .build());
-        return LoginResponse.builder()
+        LoginResponse dto = LoginResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
+        cacheManagerService.put(username, CachePrefix.USER_LOGIN, dto);
+        return dto;
     }
 }

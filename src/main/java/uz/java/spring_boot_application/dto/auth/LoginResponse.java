@@ -2,12 +2,14 @@ package uz.java.spring_boot_application.dto.auth;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LoginResponse {
+public class LoginResponse implements Serializable {
     private String accessToken;
     private String refreshToken;
 }
