@@ -24,10 +24,11 @@ public class HomeworkService {
     private final HomeworkMapper homeworkMapper;
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
+    private final UserSession userSession;
 
     @Transactional
     public Long create(HomeworkRequestDto dto) {
-        CustomUserDetails currentUser = UserSession.getCurrentUser();
+        CustomUserDetails currentUser = userSession.getCurrentUser();
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
         if (list.contains("ROLE_TEACHER")) {
@@ -48,7 +49,7 @@ public class HomeworkService {
     public Long update(Long id, HomeworkRequestDto dto) {
         Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));
-        CustomUserDetails currentUser = UserSession.getCurrentUser();
+        CustomUserDetails currentUser = userSession.getCurrentUser();
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
         if (list.contains("ROLE_TEACHER")) {
@@ -69,7 +70,7 @@ public class HomeworkService {
     public HomeworkResponseDto getOne(Long id) {
         Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));
-        CustomUserDetails currentUser = UserSession.getCurrentUser();
+        CustomUserDetails currentUser = userSession.getCurrentUser();
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
         if (list.contains("ROLE_TEACHER")) {
@@ -93,7 +94,7 @@ public class HomeworkService {
     public boolean delete(Long id) {
         Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));
-        CustomUserDetails currentUser = UserSession.getCurrentUser();
+        CustomUserDetails currentUser = userSession.getCurrentUser();
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
         if (list.contains("ROLE_TEACHER")) {
