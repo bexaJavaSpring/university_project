@@ -154,6 +154,17 @@
                                  referencedColumnNames="user_id"
                                  referencedTableName="teachers"/>
     </changeSet>
+    <changeSet id="1776353769484-1" author="bekhruz_web">
+        <addColumn tableName="homework">
+            <column name="group_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1776353670584-1" author="bekhruz_web">
+        <addForeignKeyConstraint baseTableName="homework" baseColumnNames="group_id"
+                                 constraintName="FK_HOMEWORK_ON_GROUP"
+                                 referencedTableName="groups"
+                                 referencedColumnNames="id"/>
+    </changeSet>
 
 
     <changeSet id="1775765886825-1"
@@ -214,6 +225,108 @@
                                  constraintName="FK_SUBMISSION_ON_STUDENT"
                                  referencedColumnNames="user_id"
                                  referencedTableName="students"/>
+    </changeSet>
+
+    <changeSet id="1776354026539-1"
+               author="Alibek">
+        <createTable tableName="schedule">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_schedule"/>
+            </column>
+            <column name="created_at"
+                    type="DATETIME"/>
+            <column name="updated_at"
+                    type="DATETIME"/>
+            <column defaultValueBoolean="false"
+                    name="is_deleted"
+                    type="BOOLEAN"/>
+            <column name="deleted_at"
+                    type="DATETIME"/>
+            <column name="created_by"
+                    type="BIGINT"/>
+            <column name="updated_by"
+                    type="BIGINT"/>
+            <column name="subject_id"
+                    type="BIGINT"/>
+            <column name="teacher_id"
+                    type="BIGINT"/>
+            <column name="group_id"
+                    type="BIGINT"/>
+            <column name="room_id"
+                    type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1776354026539-2"
+               author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="group_id"
+                                 baseTableName="schedule"
+                                 constraintName="FK_SCHEDULE_ON_GROUP"
+                                 referencedColumnNames="id"
+                                 referencedTableName="groups"/>
+    </changeSet>
+    <changeSet id="1776354026539-3"
+               author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="room_id"
+                                 baseTableName="schedule"
+                                 constraintName="FK_SCHEDULE_ON_ROOM"
+                                 referencedColumnNames="id"
+                                 referencedTableName="rooms"/>
+    </changeSet>
+    <changeSet id="1776354026539-4"
+               author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="subject_id"
+                                 baseTableName="schedule"
+                                 constraintName="FK_SCHEDULE_ON_SUBJECT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="subjects"/>
+    </changeSet>
+    <changeSet id="1776354026539-5"
+               author="Alibek">
+        <addForeignKeyConstraint baseColumnNames="teacher_id"
+                                 baseTableName="schedule"
+                                 constraintName="FK_SCHEDULE_ON_TEACHER"
+                                 referencedColumnNames="user_id"
+                                 referencedTableName="teachers"/>
+    </changeSet>
+
+    <changeSet id="create-teacher-group-table" author="bexruz">
+
+        <createTable tableName="teacher_group">
+            <column name="teacher_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="group_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Composite Primary Key -->
+        <addPrimaryKey
+                columnNames="teacher_id, group_id"
+                constraintName="pk_teacher_group"
+                tableName="teacher_group"/>
+
+        <!-- Foreign Key to teacher -->
+        <addForeignKeyConstraint
+                baseTableName="teacher_group"
+                baseColumnNames="teacher_id"
+                referencedTableName="teachers"
+                referencedColumnNames="user_id"
+                constraintName="fk_teacher_group_teacher"/>
+
+        <!-- Foreign Key to group -->
+        <addForeignKeyConstraint
+                baseTableName="teacher_group"
+                baseColumnNames="group_id"
+                referencedTableName="groups"
+                referencedColumnNames="id"
+                constraintName="fk_teacher_group_group"/>
+
     </changeSet>
 
 </databaseChangeLog>

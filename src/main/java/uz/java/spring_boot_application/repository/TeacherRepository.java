@@ -21,7 +21,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
                                               @Param("subjectId") Long subjectId,
                                               Pageable pageable);
 
-    Teacher findBYUsername(String username);
+    Teacher findByUsername(String username);
 
     List<Teacher> id(Long id);
 }

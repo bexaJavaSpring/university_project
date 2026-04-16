@@ -34,7 +34,7 @@ public class HomeworkService {
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
         if (list.contains("ROLE_TEACHER")) {
-            Teacher teacher = teacherRepository.findBYUsername(user.getUsername());
+            Teacher teacher = teacherRepository.findByUsername(user.getUsername());
 
             boolean hasAccess = teacher.getGroups().stream()
                     .anyMatch(n->n.getId().equals(dto.getGroupId()));
@@ -55,7 +55,7 @@ public class HomeworkService {
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
         if (list.contains("ROLE_TEACHER")) {
-            Teacher teacher = teacherRepository.findBYUsername(user.getUsername());
+            Teacher teacher = teacherRepository.findByUsername(user.getUsername());
 
             boolean hasAccess = teacher.getGroups().stream()
                     .anyMatch(n->n.getId().equals(dto.getGroupId()));
@@ -80,7 +80,7 @@ public class HomeworkService {
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
         if (list.contains("ROLE_TEACHER")) {
-            Teacher teacher = teacherRepository.findBYUsername(user.getUsername());
+            Teacher teacher = teacherRepository.findByUsername(user.getUsername());
 
             boolean hasAccess = teacher.getGroups().stream()
                     .anyMatch(n->n.getId().equals(homework.getGroup().getId()));
@@ -107,7 +107,7 @@ public class HomeworkService {
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
         if (list.contains("ROLE_TEACHER")) {
-            Teacher teacher = teacherRepository.findBYUsername(user.getUsername());
+            Teacher teacher = teacherRepository.findByUsername(user.getUsername());
 
             boolean hasAccess = teacher.getGroups().stream()
                     .anyMatch(n->n.getId().equals(homework.getGroup().getId()));

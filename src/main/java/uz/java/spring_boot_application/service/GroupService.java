@@ -28,17 +28,23 @@ public class GroupService {
     private final CacheManagerService cacheManagerService;
 
     public List<GroupResponse> getAll(GroupFilter filter) {
+        Object data = cacheManagerService.get(filter.hashCode() + "", CachePrefix.GROUP);
+        if (data != null) {
+            return (List<GroupResponse>) data;
+        }
         int page = filter.page() != null ? filter.page() : 0;
         int limit = filter.limit() != null ? filter.limit() : 10;
 
         PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(filter.sortBy() != null ? filter.sortBy() : "id").ascending());
         Page<Group> allCustom = groupRepository.findAllCustom(filter.name(), filter.groupNumber(), filter.facultyId(), pageRequest);
-        return allCustom.stream().map(groupMapper::toResponse).toList();
+        List<GroupResponse> response = allCustom.stream().map(groupMapper::toResponse).toList();
+        cacheManagerService.put(filter.hashCode() + "", CachePrefix.GROUP, response);
+        return response;
     }
 
     public GroupResponse getOne(Long id) {
         Object data = cacheManagerService.get(id.toString(), CachePrefix.GROUP);
-        if (data!=null){
+        if (data != null) {
             return (GroupResponse) data;
         }
         Group group = groupRepository.findById(id).orElseThrow(
@@ -49,6 +55,7 @@ public class GroupService {
         cacheManagerService.put(id.toString(), CachePrefix.GROUP, response);
         return response;
     }
+
     @Transactional
     public Long create(GroupRequest request) {
         facultyRepository.findById(request.getFacultyId()).orElseThrow(
@@ -56,8 +63,10 @@ public class GroupService {
         );
         Group group = groupMapper.toEntity(request);
         Group save = groupRepository.save(group);
+        cacheManagerService.delete(CachePrefix.GROUP);
         return save.getId();
     }
+
     @Transactional
     public Boolean update(Long id, GroupRequest request) {
         Group group = groupRepository.findById(id).orElseThrow(
@@ -65,8 +74,10 @@ public class GroupService {
         );
         groupMapper.updateFromRequest(request, group);
         groupRepository.save(group);
+        cacheManagerService.delete(CachePrefix.GROUP);
         return true;
     }
+
     @Transactional
     public Boolean delete(Long id) {
         Group group = groupRepository.findById(id).orElseThrow(
@@ -74,6 +85,7 @@ public class GroupService {
         );
         group.markAsDeleted();
         groupRepository.save(group);
+        cacheManagerService.delete(CachePrefix.GROUP);
         return true;
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import uz.java.spring_boot_application.config.UserSession;
 import uz.java.spring_boot_application.dto.cache.CacheDto;
+import uz.java.spring_boot_application.entities.Role;
 import uz.java.spring_boot_application.entities.User;
 
 import java.util.List;
@@ -45,24 +46,42 @@ public class CacheManagerService {
 
     public void delete(String cachePrefix) {
         User user = userSession.getCurrentUser().getUser();
+        Set<String> set = user.getRoles().stream().map(Role::getCode).collect(Collectors.toSet());
         Set<String> allKeys = redisTemplate.keys("*");
-        if (!allKeys.isEmpty()) {
-            redisTemplate.delete(allKeys.stream()
-                    .filter(deletedKey -> deletedKey.startsWith(cachePrefix)
-                            && (deletedKey.contains(user.getId().toString())))
-                    .collect(Collectors.toSet()));
+        if (set.containsAll(List.of("ROLE_SUPERADMIN", "ROLE_REKTOR"))) {
+            if (!allKeys.isEmpty()) {
+                redisTemplate.delete(allKeys.stream()
+                        .filter(deletedKey -> deletedKey.startsWith(cachePrefix))
+                        .collect(Collectors.toSet()));
+            }
+        } else {
+            if (!allKeys.isEmpty()) {
+                redisTemplate.delete(allKeys.stream()
+                        .filter(deletedKey -> deletedKey.startsWith(cachePrefix)
+                                && deletedKey.endsWith(user.getId().toString()))
+                        .collect(Collectors.toSet()));
+            }
         }
     }
 
     public void deleteMultiple(List<String> cachePrefixes) {
         User user = userSession.getCurrentUser().getUser();
+        Set<String> set = user.getRoles().stream().map(Role::getCode).collect(Collectors.toSet());
         Set<String> allKeys = redisTemplate.keys("*");
         for (String cachePrefix : cachePrefixes) {
-            if (!allKeys.isEmpty()) {
-                redisTemplate.delete(allKeys.stream()
-                        .filter(deletedKey -> deletedKey.startsWith(cachePrefix) &&
-                                (deletedKey.contains(user.getId().toString())))
-                        .collect(Collectors.toSet()));
+            if (set.containsAll(List.of("ROLE_SUPERADMIN", "ROLE_REKTOR"))) {
+                if (!allKeys.isEmpty()) {
+                    redisTemplate.delete(allKeys.stream()
+                            .filter(deletedKey -> deletedKey.startsWith(cachePrefix))
+                            .collect(Collectors.toSet()));
+                }
+            } else {
+                if (!allKeys.isEmpty()) {
+                    redisTemplate.delete(allKeys.stream()
+                            .filter(deletedKey -> deletedKey.startsWith(cachePrefix)
+                                    && deletedKey.endsWith(user.getId().toString()))
+                            .collect(Collectors.toSet()));
+                }
             }
         }
     }

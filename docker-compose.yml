@@ -38,7 +38,7 @@ services:
     ports:
       - "6379:6379"
     restart: always
-    command: [ "redis-server", "--appendonly", "yes" , "--requirepass", "redisAdmin"]
+    command: [ "redis-server", "--appendonly", "yes"]
     volumes:
       - redis_data:/data
   redis-commander:
@@ -47,7 +47,9 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - REDIS_HOSTS=local:redis:6379:0:redisAdmin
+      - REDIS_HOSTS=local:redis:6379
+      - HTTP_USER=admin
+      - HTTP_PASSWORD=12345
     depends_on:
       - redis
 volumes:

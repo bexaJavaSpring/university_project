@@ -1,6 +1,5 @@
 package uz.java.spring_boot_application.controller;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
