@@ -14,6 +14,7 @@ import uz.java.spring_boot_application.repository.HomeworkRepository;
 import uz.java.spring_boot_application.repository.StudentRepository;
 import uz.java.spring_boot_application.repository.TeacherRepository;
 import uz.java.spring_boot_application.security.CustomUserDetails;
+import uz.java.spring_boot_application.util.CachePrefix;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class HomeworkService {
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
     private final UserSession userSession;
+    private final CacheManagerService cacheManagerService;
 
     @Transactional
     public Long create(HomeworkRequestDto dto) {
@@ -68,6 +70,10 @@ public class HomeworkService {
 
     @Transactional(readOnly = true)
     public HomeworkResponseDto getOne(Long id) {
+        Object data = cacheManagerService.get(id.toString(), CachePrefix.HOMEWORK);
+        if (data!=null){
+            return (HomeworkResponseDto) data;
+        }
         Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));
         CustomUserDetails currentUser = userSession.getCurrentUser();
@@ -88,7 +94,10 @@ public class HomeworkService {
                 throw new CustomAccessDeniedException("access denied");
             }
         }
-        return homeworkMapper.toResponseDto(homework);
+
+        HomeworkResponseDto responseDto = homeworkMapper.toResponseDto(homework);
+        cacheManagerService.put(id.toString(),CachePrefix.HOMEWORK,responseDto);
+        return responseDto;
     }
     @Transactional
     public boolean delete(Long id) {

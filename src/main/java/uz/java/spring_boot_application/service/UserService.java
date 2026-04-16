@@ -11,6 +11,7 @@ import uz.java.spring_boot_application.entities.User;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.mapper.UserMapper;
 import uz.java.spring_boot_application.repository.UserRepository;
+import uz.java.spring_boot_application.util.CachePrefix;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final CacheManagerService cacheManagerService;
 
     public List<UserResponse> getAll() {
         List<User> all = userRepository.findAll();
@@ -27,10 +29,16 @@ public class UserService {
     }
 
     public UserResponse getOne(Long id) {
+        Object data = cacheManagerService.get(id.toString(), CachePrefix.USER);
+        if (data!=null){
+            return (UserResponse) data;
+        }
         User user = userRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("user.not.found")
         );
-        return userMapper.toResponse(user);
+        UserResponse response = userMapper.toResponse(user);
+        cacheManagerService.put(id.toString(), CachePrefix.USER, response);
+        return response;
     }
     @Transactional
     public Long create(UserRequest request) {

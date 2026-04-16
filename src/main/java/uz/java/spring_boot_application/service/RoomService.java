@@ -12,6 +12,7 @@ import uz.java.spring_boot_application.mapper.RoomMapper;
 import uz.java.spring_boot_application.repository.RoomRepository;
 import uz.java.spring_boot_application.specification.RoomSpecification;
 import uz.java.spring_boot_application.specification.SearchSpecification;
+import uz.java.spring_boot_application.util.CachePrefix;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final RoomMapper roomMapper;
+    private final CacheManagerService cacheManagerService;
 
     public List<RoomResponse> getAll(RoomFilter filter) {
         RoomSpecification spec = new RoomSpecification(filter);
@@ -32,11 +34,17 @@ public class RoomService {
     }
 
     public RoomResponse getOne(Long id) {
+        Object data = cacheManagerService.get(id.toString(), CachePrefix.ROOM);
+        if (data!=null){
+            return (RoomResponse) data;
+        }
         Room room = roomRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("room.not.found")
         );
 
-        return  roomMapper.toResponse(room);
+        RoomResponse response = roomMapper.toResponse(room);
+        cacheManagerService.put(id.toString(), CachePrefix.ROOM, response);
+        return response;
     }
     @Transactional
     public Long create(RoomRequest roomRequest) {

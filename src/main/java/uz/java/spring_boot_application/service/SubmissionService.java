@@ -25,13 +25,14 @@ public class SubmissionService {
     private final HomeworkRepository homeworkRepository;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
+    private final UserSession userSession;
 
 
     public Long create(SubmissionRequestDto dto) {
         Homework homework = homeworkRepository.findById(dto.getHomeworkId())
                 .orElseThrow(() -> new GenericNotFoundException("Homework not found"));
 
-        CustomUserDetails userDetails = UserSession.getCurrentUser();
+        CustomUserDetails userDetails = userSession.getCurrentUser();
         User user = userDetails.getUser();
         List<String> roles = user.getRoles().stream().map(Role::getCode).toList();
         if (roles.contains("ROLE_STUDENT")) {
@@ -52,7 +53,7 @@ public class SubmissionService {
                 findById(id).orElseThrow(() -> new GenericNotFoundException("Student not found"));
         Homework homework = homeworkRepository.findById(dto.getHomeworkId())
                 .orElseThrow(() -> new GenericNotFoundException("Homework not found"));
-        CustomUserDetails userDetails = UserSession.getCurrentUser();
+        CustomUserDetails userDetails = userSession.getCurrentUser();
         User user = userDetails.getUser();
         List<String> roles = user.getRoles().stream().map(Role::getCode).toList();
         if (roles.contains("ROLE_STUDENT")) {
@@ -69,7 +70,7 @@ public class SubmissionService {
     public SubmissionResponseDto getOne(Long id) {
         Submission submission = submissionRepository.findById(id).orElseThrow(() ->
                 new GenericNotFoundException("Submission not found"));
-        CustomUserDetails userDetails = UserSession.getCurrentUser();
+        CustomUserDetails userDetails = userSession.getCurrentUser();
         User user = userDetails.getUser();
         List<String> roles = user.getRoles().stream().map(Role::getCode).toList();
         if (roles.contains("ROLE_STUDENT")) {

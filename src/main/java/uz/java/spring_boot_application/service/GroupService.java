@@ -14,6 +14,7 @@ import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.mapper.GroupMapper;
 import uz.java.spring_boot_application.repository.FacultyRepository;
 import uz.java.spring_boot_application.repository.GroupRepository;
+import uz.java.spring_boot_application.util.CachePrefix;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final GroupMapper groupMapper;
     private final FacultyRepository facultyRepository;
+    private final CacheManagerService cacheManagerService;
 
     public List<GroupResponse> getAll(GroupFilter filter) {
         int page = filter.page() != null ? filter.page() : 0;
@@ -35,10 +37,17 @@ public class GroupService {
     }
 
     public GroupResponse getOne(Long id) {
+        Object data = cacheManagerService.get(id.toString(), CachePrefix.GROUP);
+        if (data!=null){
+            return (GroupResponse) data;
+        }
         Group group = groupRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("Group not found")
         );
-        return groupMapper.toResponse(group);
+
+        GroupResponse response = groupMapper.toResponse(group);
+        cacheManagerService.put(id.toString(), CachePrefix.GROUP, response);
+        return response;
     }
     @Transactional
     public Long create(GroupRequest request) {
