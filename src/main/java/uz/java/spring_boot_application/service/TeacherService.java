@@ -37,7 +37,6 @@ public class TeacherService {
                 limit,
                 Sort.by(filter.sortBy() != null ? filter.sortBy() : "createdAt").descending()
         );
-
         List<Teacher> all = teacherRepository.findAllCustomWithPagination(filter.salary(),
                 filter.facultyId(),
                 filter.subjectId(),

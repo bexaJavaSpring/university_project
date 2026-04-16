@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import uz.java.spring_boot_application.entities.Role;
@@ -16,6 +17,7 @@ import java.util.Set;
 @Slf4j
 @SpringBootApplication
 @EnableAsync
+@EnableCaching
 public class Application {
 
 //    private final PasswordEncoder passwordEncoder;
