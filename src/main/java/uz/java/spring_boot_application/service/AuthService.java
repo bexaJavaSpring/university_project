@@ -62,10 +62,9 @@ public class AuthService {
                 .refreshToken(refreshToken)
                 .status(Status.ACTIVE)
                 .build());
-        LoginResponse dto = LoginResponse.builder()
+        return LoginResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
-        return dto;
     }
 }
