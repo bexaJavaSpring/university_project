@@ -20,5 +20,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
                                               @Param("facultyId") Long facultyId,
                                               @Param("subjectId") Long subjectId,
                                               Pageable pageable);
+
+    List<Teacher> id(Long id);
 }
 

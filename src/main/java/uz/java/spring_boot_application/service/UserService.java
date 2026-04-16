@@ -3,6 +3,7 @@ package uz.java.spring_boot_application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.config.UserSession;
 import uz.java.spring_boot_application.dto.user.UserRequest;
 import uz.java.spring_boot_application.dto.user.UserResponse;
@@ -21,11 +22,13 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserSession userSession;
 
+    @Transactional(readOnly = true)
     public List<UserResponse> getAll() {
         List<User> all = userRepository.findAll();
         return all.stream().map(userMapper::toResponse).toList();
     }
 
+    @Transactional(readOnly = true)
     public UserResponse getOne(Long id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("user.not.found")
@@ -33,12 +36,14 @@ public class UserService {
         return userMapper.toResponse(user);
     }
 
+    @Transactional
     public Long create(UserRequest request) {
         User entity = userMapper.toEntity(request);
         userRepository.save(entity);
         return entity.getId();
     }
 
+    @Transactional
     public Long update(Long userId, UserRequest request) {
         var user = userRepository.findById(userId).orElseThrow(
                 () -> new GenericNotFoundException("user.not.found")
@@ -48,6 +53,7 @@ public class UserService {
         return user.getId();
     }
 
+    @Transactional
     public Boolean delete(Long id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("user.not.found")

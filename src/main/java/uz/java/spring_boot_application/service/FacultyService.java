@@ -32,6 +32,7 @@ public class FacultyService {
     private final ZamdekanRepository zamdekanRepository;
     private final CacheManagerService cacheManagerService;
 
+
     public List<FacultyResponse> getAll(FacultyFilter filter) {
         FacultySpecification spec = new FacultySpecification(filter);
         List<Faculty> all = facultyRepository.findAll(spec, SearchSpecification.getPageable(
