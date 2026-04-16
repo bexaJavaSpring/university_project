@@ -24,6 +24,7 @@ public class HomeworkService {
     private final HomeworkMapper homeworkMapper;
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
+
     @Transactional
     public Long create(HomeworkRequestDto dto) {
         CustomUserDetails currentUser = UserSession.getCurrentUser();
@@ -39,9 +40,10 @@ public class HomeworkService {
             }
 
         }
-        Homework homework =homeworkMapper.toEntity(dto);
+        Homework homework = homeworkMapper.toEntity(dto);
         return homeworkRepository.save(homework).getId();
     }
+
     @Transactional
     public Long update(Long id, HomeworkRequestDto dto) {
         Homework homework = homeworkRepository.findById(id)
@@ -63,6 +65,7 @@ public class HomeworkService {
         return homeworkRepository.save(homework).getId();
     }
 
+    @Transactional(readOnly = true)
     public HomeworkResponseDto getOne(Long id) {
         Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));

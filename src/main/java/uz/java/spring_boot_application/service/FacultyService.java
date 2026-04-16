@@ -40,6 +40,7 @@ public class FacultyService {
         return all.stream().map(mapper::toResponse).toList();
     }
 
+
     public FacultyResponse getOne(Long id) {
         Faculty faculty = facultyRepository.findById(id).orElseThrow(() ->
                 new GenericNotFoundException("faculty.not.found")

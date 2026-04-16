@@ -11,8 +11,7 @@ public interface SubmissionMapper {
     @Mapping(source = "fileId", target = "file.id")
     Submission toEntity(SubmissionRequestDto dto);
 
-    @Mapping(source = "homeworkId", target = "homework.id")
-    @Mapping(source = "fileId", target = "file.id")
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateSubmissionFromDto(SubmissionRequestDto dto, @MappingTarget Submission submission);
 

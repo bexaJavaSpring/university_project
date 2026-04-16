@@ -50,13 +50,4 @@ public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
-
-    // 1. Web layer  --> Controller class lar
-    // 2. Model Layer --> entity class lar, dtos
-    // 3. Data Access Layer --> repository, daos class lar
-    // 4. Business Logic Layer --> service class lar
-    // 5. Application layer --> helpers, componentalar
-
-//    CRUD -> Create, Read, Update, Delete
-//    REST API ishlatamiz
 }

@@ -23,7 +23,7 @@ public class Homework extends Auditable {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
 
