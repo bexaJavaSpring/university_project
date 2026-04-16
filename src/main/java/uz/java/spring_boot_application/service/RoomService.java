@@ -24,6 +24,7 @@ public class RoomService {
     private final RoomMapper roomMapper;
     private final CacheManagerService cacheManagerService;
 
+    @Transactional(readOnly = true)
     public List<RoomResponse> getAll(RoomFilter filter) {
         RoomSpecification spec = new RoomSpecification(filter);
         List<Room> list = roomRepository.findAll(spec, SearchSpecification.getPageable(
@@ -33,6 +34,7 @@ public class RoomService {
         return list.stream().map(roomMapper::toResponse).toList();
     }
 
+    @Transactional(readOnly = true)
     public RoomResponse getOne(Long id) {
         Object data = cacheManagerService.get(id.toString(), CachePrefix.ROOM);
         if (data!=null){

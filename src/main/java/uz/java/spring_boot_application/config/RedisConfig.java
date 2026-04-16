@@ -44,6 +44,7 @@ public class RedisConfig {
         System.out.println("In Clear Cache");
         Jedis jedis = new Jedis(host, port, 10000); // timeout - shu Jedis ga connection agar bolmasa 10 sekundan kn
         // avtoatik uziladi
+        jedis.auth("redisAdmin");
         jedis.flushDB();
         jedis.close();
     }

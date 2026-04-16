@@ -13,7 +13,6 @@ import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.repository.SessionUserRepository;
 import uz.java.spring_boot_application.repository.UserRepository;
 import uz.java.spring_boot_application.security.CustomUserDetails;
-import uz.java.spring_boot_application.util.CachePrefix;
 
 @Service
 @Slf4j
@@ -34,11 +33,6 @@ public class AuthService {
     }
 
     public LoginResponse login(String username, String password) {
-        Object data = cacheManagerService.get(username, CachePrefix.USER_LOGIN);
-        if (data != null) {
-            log.warn("LoginResponse found in cache by key: {}", username);
-            return (LoginResponse) data;
-        }
         Authentication authenticate = authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(
                 username, password
         ));
@@ -68,11 +62,9 @@ public class AuthService {
                 .refreshToken(refreshToken)
                 .status(Status.ACTIVE)
                 .build());
-        LoginResponse dto = LoginResponse.builder()
+        return LoginResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
-        cacheManagerService.put(username, CachePrefix.USER_LOGIN, dto);
-        return dto;
     }
 }

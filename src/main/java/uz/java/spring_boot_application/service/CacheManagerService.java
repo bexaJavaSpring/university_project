@@ -44,10 +44,12 @@ public class CacheManagerService {
     }
 
     public void delete(String cachePrefix) {
+        User user = userSession.getCurrentUser().getUser();
         Set<String> allKeys = redisTemplate.keys("*");
         if (!allKeys.isEmpty()) {
             redisTemplate.delete(allKeys.stream()
-                    .filter(deletedKey -> deletedKey.startsWith(cachePrefix))
+                    .filter(deletedKey -> deletedKey.startsWith(cachePrefix)
+                            && (deletedKey.contains(user.getId().toString())))
                     .collect(Collectors.toSet()));
         }
     }

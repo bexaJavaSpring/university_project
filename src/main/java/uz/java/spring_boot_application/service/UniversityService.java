@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.java.spring_boot_application.dto.faculty.FacultyResponse;
 import uz.java.spring_boot_application.dto.university.UniversityFilter;
 import uz.java.spring_boot_application.dto.university.UniversityRequest;
 import uz.java.spring_boot_application.dto.university.UniversityResponse;
@@ -19,6 +20,7 @@ import uz.java.spring_boot_application.repository.FacultyRepository;
 import uz.java.spring_boot_application.repository.UniversityRepository;
 import uz.java.spring_boot_application.repository.UserRepository;
 import uz.java.spring_boot_application.repository.ZamdekanRepository;
+import uz.java.spring_boot_application.util.CachePrefix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,7 @@ public class UniversityService {
     private final FacultyRepository facultyRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
+    private final CacheManagerService cacheManagerService;
 
 
     public List<UniversityResponse> getAll(UniversityFilter filter) {
@@ -52,12 +55,18 @@ public class UniversityService {
         return allCustom.getContent().stream().map(universityMapper::toResponse).toList();
     }
 
+    @Transactional(readOnly = true)
     public UniversityResponse getOne(Long id) {
+        Object data = cacheManagerService.get(id.toString(), CachePrefix.UNIVERSITY);
+        if (data != null)
+            return (UniversityResponse) data;
         University university = universityRepository.findById(id).orElse(null);
         if (university == null)
             throw new GenericNotFoundException("University not found");
 
-        return universityMapper.toResponse(university);
+        UniversityResponse response = universityMapper.toResponse(university);
+        cacheManagerService.put(id.toString(), CachePrefix.UNIVERSITY, response);
+        return response;
     }
 
     @Transactional

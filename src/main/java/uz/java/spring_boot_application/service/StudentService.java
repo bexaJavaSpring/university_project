@@ -9,6 +9,7 @@ import uz.java.spring_boot_application.entities.Student;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.mapper.StudentMapper;
 import uz.java.spring_boot_application.repository.StudentRepository;
+import uz.java.spring_boot_application.util.CachePrefix;
 
 import java.util.List;
 
@@ -18,19 +19,29 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
+    private final CacheManagerService cacheManagerService;
 
+    @Transactional(readOnly = true)
     public List<StudentResponse> getAll() {
         return studentRepository.findAll().stream().map(
                 studentMapper::toResponse
         ).toList();
     }
 
+    @Transactional(readOnly = true)
     public StudentResponse getOne(Long id) {
+        Object data = cacheManagerService.get(id.toString(), CachePrefix.STUDENT);
+        if(data != null){
+            return (StudentResponse) data;
+        }
         Student student = studentRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("student.not.found")
         );
-        return studentMapper.toResponse(student);
+        StudentResponse response = studentMapper.toResponse(student);
+        cacheManagerService.put(id.toString(), CachePrefix.STUDENT, response);
+        return response;
     }
+
 
     @Transactional
     public Long create(StudentRequest request) {
@@ -38,6 +49,7 @@ public class StudentService {
         Student save = studentRepository.save(entity);
         return save.getId();
     }
+
     @Transactional
     public Long update(Long id, StudentRequest request) {
         Student student = studentRepository.findById(id).orElseThrow(
@@ -48,6 +60,7 @@ public class StudentService {
         Student save = studentRepository.save(student);
         return save.getId();
     }
+
     @Transactional
     public Boolean delete(Long id) {
         Student student = studentRepository.findById(id).orElseThrow(

@@ -22,5 +22,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
                                               Pageable pageable);
 
     Teacher findBYUsername(String username);
+
+    List<Teacher> id(Long id);
 }
 

@@ -2,9 +2,12 @@ package uz.java.spring_boot_application.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import uz.java.spring_boot_application.dto.faculty.FacultyResponse;
 import uz.java.spring_boot_application.dto.user.TeacherFilter;
 import uz.java.spring_boot_application.dto.user.TeacherRequest;
+import uz.java.spring_boot_application.dto.user.TeacherResponse;
 import uz.java.spring_boot_application.service.TeacherService;
 
 @RestController
@@ -13,6 +16,11 @@ public class TeacherController {
 
     @Autowired
     private TeacherService teacherService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TeacherResponse> getOne(@PathVariable Long id) {
+        return ResponseEntity.ok(teacherService.getOne(id));
+    }
 
     @GetMapping("/all")
     public ResponseEntity<?> getAll(@RequestParam Integer page,

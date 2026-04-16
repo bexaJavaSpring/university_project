@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.java.spring_boot_application.dto.subject.SubjectFilter;
 import uz.java.spring_boot_application.dto.subject.SubjectRequest;
+import uz.java.spring_boot_application.dto.subject.SubjectResponse;
+import uz.java.spring_boot_application.dto.user.TeacherResponse;
 import uz.java.spring_boot_application.service.SubjectService;
 
 @RestController
@@ -13,6 +15,11 @@ public class SubjectController {
 
     @Autowired
     private SubjectService subjectService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SubjectResponse> getOne(@PathVariable Long id) {
+        return ResponseEntity.ok(subjectService.getOne(id));
+    }
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllSubjects(@RequestParam Integer page,
