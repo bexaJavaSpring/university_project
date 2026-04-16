@@ -22,7 +22,6 @@ import java.util.List;
 public class HomeworkService {
     private final HomeworkRepository homeworkRepository;
     private final HomeworkMapper homeworkMapper;
-    private final UserSession userSession;
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
     @Transactional
@@ -47,7 +46,7 @@ public class HomeworkService {
     public Long update(Long id, HomeworkRequestDto dto) {
         Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));
-        CustomUserDetails currentUser = userSession.getCurrentUser();
+        CustomUserDetails currentUser = UserSession.getCurrentUser();
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
         if (list.contains("ROLE_TEACHER")) {
@@ -67,7 +66,7 @@ public class HomeworkService {
     public HomeworkResponseDto getOne(Long id) {
         Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));
-        CustomUserDetails currentUser = userSession.getCurrentUser();
+        CustomUserDetails currentUser = UserSession.getCurrentUser();
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
         if (list.contains("ROLE_TEACHER")) {
@@ -91,7 +90,7 @@ public class HomeworkService {
     public boolean delete(Long id) {
         Homework homework = homeworkRepository.findById(id)
                 .orElseThrow(()->new GenericNotFoundException("homework not found"));
-        CustomUserDetails currentUser = userSession.getCurrentUser();
+        CustomUserDetails currentUser = UserSession.getCurrentUser();
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
         if (list.contains("ROLE_TEACHER")) {

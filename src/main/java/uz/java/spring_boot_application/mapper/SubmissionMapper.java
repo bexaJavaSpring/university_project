@@ -1,9 +1,6 @@
 package uz.java.spring_boot_application.mapper;
 
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import uz.java.spring_boot_application.dto.submission.SubmissionRequestDto;
 import uz.java.spring_boot_application.dto.submission.SubmissionResponseDto;
 import uz.java.spring_boot_application.entities.Submission;
@@ -17,7 +14,7 @@ public interface SubmissionMapper {
     @Mapping(source = "homeworkId", target = "homework.id")
     @Mapping(source = "fileId", target = "file.id")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateSubmissionFromDto(SubmissionRequestDto dto, Submission submission);
+    void updateSubmissionFromDto(SubmissionRequestDto dto, @MappingTarget Submission submission);
 
 
     @Mapping(source = "homework.title",target = "homeworkTitle")
