@@ -39,8 +39,7 @@ public class SecurityConfig {
             "/webjars/**",
             "/webjars",
             "/auth/login",
-            "/files/upload",
-
+            "/files/upload"
     };
     //     Basic authorization
     @Bean
