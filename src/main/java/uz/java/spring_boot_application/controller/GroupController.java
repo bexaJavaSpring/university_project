@@ -3,6 +3,7 @@ package uz.java.spring_boot_application.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uz.java.spring_boot_application.dto.DataDto;
 import uz.java.spring_boot_application.dto.group.GroupFilter;
 import uz.java.spring_boot_application.dto.group.GroupRequest;
 import uz.java.spring_boot_application.dto.group.GroupResponse;
@@ -21,12 +22,12 @@ public class GroupController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GroupResponse>> getAll(@RequestParam Integer page,
-                                                      @RequestParam Integer limit,
-                                                      @RequestParam(required = false) String sortBy,
-                                                      @RequestParam(required = false)  String name,
-                                                      @RequestParam(required = false) String groupNumber,
-                                                      @RequestParam(required = false) Long facultyId){
+    public ResponseEntity<?> getAll(@RequestParam Integer page,
+                                                              @RequestParam Integer limit,
+                                                              @RequestParam(required = false) String sortBy,
+                                                              @RequestParam(required = false)  String name,
+                                                              @RequestParam(required = false) String groupNumber,
+                                                              @RequestParam(required = false) Long facultyId){
         return ResponseEntity.ok(service.getAll(new GroupFilter(page, limit, sortBy, name, groupNumber, facultyId)));
     }
 

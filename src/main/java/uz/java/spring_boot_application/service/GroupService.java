@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.java.spring_boot_application.dto.DataDto;
 import uz.java.spring_boot_application.dto.group.GroupFilter;
 import uz.java.spring_boot_application.dto.group.GroupRequest;
 import uz.java.spring_boot_application.dto.group.GroupResponse;
@@ -27,10 +28,10 @@ public class GroupService {
     private final FacultyRepository facultyRepository;
     private final CacheManagerService cacheManagerService;
 
-    public List<GroupResponse> getAll(GroupFilter filter) {
+    public DataDto<List<GroupResponse>> getAll(GroupFilter filter) {
         Object data = cacheManagerService.get(filter.hashCode() + "", CachePrefix.GROUP);
         if (data != null) {
-            return (List<GroupResponse>) data;
+            return (DataDto<List<GroupResponse>>) data;
         }
         int page = filter.page() != null ? filter.page() : 0;
         int limit = filter.limit() != null ? filter.limit() : 10;
@@ -38,8 +39,8 @@ public class GroupService {
         PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(filter.sortBy() != null ? filter.sortBy() : "id").ascending());
         Page<Group> allCustom = groupRepository.findAllCustom(filter.name(), filter.groupNumber(), filter.facultyId(), pageRequest);
         List<GroupResponse> response = allCustom.stream().map(groupMapper::toResponse).toList();
-        cacheManagerService.put(filter.hashCode() + "", CachePrefix.GROUP, response);
-        return response;
+        cacheManagerService.put(filter.hashCode() + "", CachePrefix.GROUP, new DataDto<>(response));
+        return new DataDto<>(response);
     }
 
     public GroupResponse getOne(Long id) {

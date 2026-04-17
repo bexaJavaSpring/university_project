@@ -1,6 +1,6 @@
 package uz.java.spring_boot_application.dto.group;
 
-public record GroupFilter(Integer page,
+public record GroupFilter (Integer page,
                           Integer limit,
                           String sortBy,
                           String name,
