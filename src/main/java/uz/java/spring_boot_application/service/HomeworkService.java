@@ -131,6 +131,7 @@ public class HomeworkService {
     }
 
 
+    @Transactional(readOnly = true)
     public DataDto<List<HomeworkResponseDto>> getAll(HomeworkFilter homeworkFilter) {
         Object data = cacheManagerService.get(homeworkFilter.hashCode() + "", CachePrefix.HOMEWORK);
         if (data!=null){

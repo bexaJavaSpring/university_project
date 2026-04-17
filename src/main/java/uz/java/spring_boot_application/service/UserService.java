@@ -24,16 +24,17 @@ public class UserService {
     private final UserMapper userMapper;
     private final CacheManagerService cacheManagerService;
 
+    @Transactional(readOnly = true)
     public DataDto<List<UserResponse>> getAll() {
         String key = "USERS_KEY";
         cacheManagerService.get(key,CachePrefix.USER);
-
         List<User> all = userRepository.findAll();
         List<UserResponse> list = all.stream().map(userMapper::toResponse).toList();
         cacheManagerService.put(key, CachePrefix.USER, new DataDto<>(list));
         return new DataDto<>(list);
     }
 
+    @Transactional(readOnly = true)
     public UserResponse getOne(Long id) {
         Object data = cacheManagerService.get(id.toString(), CachePrefix.USER);
         if (data!=null){
