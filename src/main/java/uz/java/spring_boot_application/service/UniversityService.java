@@ -1,14 +1,9 @@
 package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.dto.DataDto;
-import uz.java.spring_boot_application.dto.faculty.FacultyResponse;
-import uz.java.spring_boot_application.dto.group.GroupResponse;
 import uz.java.spring_boot_application.dto.university.UniversityFilter;
 import uz.java.spring_boot_application.dto.university.UniversityRequest;
 import uz.java.spring_boot_application.dto.university.UniversityResponse;
@@ -22,9 +17,10 @@ import uz.java.spring_boot_application.repository.FacultyRepository;
 import uz.java.spring_boot_application.repository.UniversityRepository;
 import uz.java.spring_boot_application.repository.UserRepository;
 import uz.java.spring_boot_application.repository.ZamdekanRepository;
+import uz.java.spring_boot_application.specification.SearchSpecification;
+import uz.java.spring_boot_application.specification.UniversitySpecification;
 import uz.java.spring_boot_application.util.CachePrefix;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,24 +37,14 @@ public class UniversityService {
     private final CacheManagerService cacheManagerService;
 
 
-    public DataDto<List<?>> getAll(UniversityFilter filter) {
+    @Transactional(readOnly = true)
+    public DataDto<List<UniversityResponse>> getAll(UniversityFilter filter) {
         Object data = cacheManagerService.get(filter.hashCode() + "", CachePrefix.UNIVERSITY);
         if (data != null) {
-            return (DataDto<List<?>>) data;
+            return (DataDto<List<UniversityResponse>>) data;
         }
-        int page = filter.page() != null ? filter.page() : 0;
-        int limit = filter.limit() != null ? filter.limit() : 10;
-        PageRequest pageRequest = PageRequest.of(
-                page,
-                limit,
-                Sort.by(filter.sortBy() != null ? filter.sortBy() : "id").ascending()
-        );
-
-        Page<University> allCustom = universityRepository.findAllCustom(filter.name() != null ? filter.name() : "",
-                filter.phone() != null ? filter.phone() : "", pageRequest);
-        if (allCustom.isEmpty())
-            return new DataDto<List<?>>();
-        List<UniversityResponse> response = allCustom.getContent().stream().map(universityMapper::toResponse).toList();
+        List<UniversityResponse> response = universityRepository.findAll(new UniversitySpecification(filter),
+                SearchSpecification.getPageable(filter.page(), filter.limit())).map(universityMapper::toResponse).toList();
         cacheManagerService.put(filter.hashCode() + "", CachePrefix.UNIVERSITY, new DataDto<>(response));
         return new DataDto<>(response);
     }

@@ -46,8 +46,6 @@ public class TeacherService {
                 () -> new GenericNotFoundException("teacher.not.found")
         );
         CustomUserDetails currentUser = userSession.getCurrentUser();
-        User user = currentUser.getUser();
-
         TeacherResponse response = teacherMapper.toResponse(teacher);
         cacheManagerService.put(id.toString(), CachePrefix.TEACHER, response);
         return response;

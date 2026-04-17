@@ -19,7 +19,7 @@ public class StudentController {
     private final StudentService studentService;
 
     @GetMapping
-    public ResponseEntity<List<StudentResponse>> getAll() {
+    public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(studentService.getAll());
     }
 

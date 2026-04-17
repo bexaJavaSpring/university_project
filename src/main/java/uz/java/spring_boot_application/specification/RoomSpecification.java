@@ -15,7 +15,7 @@ import java.util.List;
 public record RoomSpecification(RoomFilter filter) implements Specification<Room> {
 
     @Override
-    public @Nullable Predicate toPredicate(Root<Room> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+    public  Predicate toPredicate(Root<Room> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
         if (filter.getName() != null)
             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + filter.getName().toLowerCase() + "%"));
