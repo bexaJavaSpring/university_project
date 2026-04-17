@@ -1,9 +1,14 @@
 package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.config.UserSession;
+import uz.java.spring_boot_application.dto.DataDto;
+import uz.java.spring_boot_application.dto.homework.HomeworkFilter;
 import uz.java.spring_boot_application.dto.homework.HomeworkRequestDto;
 import uz.java.spring_boot_application.dto.homework.HomeworkResponseDto;
 import uz.java.spring_boot_application.entities.*;
@@ -44,7 +49,9 @@ public class HomeworkService {
 
         }
         Homework homework = homeworkMapper.toEntity(dto);
-        return homeworkRepository.save(homework).getId();
+        Long id = homeworkRepository.save(homework).getId();
+        cacheManagerService.delete(CachePrefix.HOMEWORK);
+        return id;
     }
 
     @Transactional
@@ -65,7 +72,9 @@ public class HomeworkService {
 
         }
         homeworkMapper.updateHomeworkFromDto(dto, homework);
-        return homeworkRepository.save(homework).getId();
+        Long id1 = homeworkRepository.save(homework).getId();
+        cacheManagerService.delete(CachePrefix.HOMEWORK);
+        return id;
     }
 
     @Transactional(readOnly = true)
@@ -117,6 +126,21 @@ public class HomeworkService {
         }
         homework.markAsDeleted();
         homeworkRepository.save(homework);
+        cacheManagerService.delete(CachePrefix.HOMEWORK);
         return true;
+    }
+
+
+    @Transactional(readOnly = true)
+    public DataDto<List<HomeworkResponseDto>> getAll(HomeworkFilter homeworkFilter) {
+        Object data = cacheManagerService.get(homeworkFilter.hashCode() + "", CachePrefix.HOMEWORK);
+        if (data!=null){
+            return (DataDto<List<HomeworkResponseDto>>) data;
+        }
+        PageRequest pageRequest = PageRequest.of(homeworkFilter.page(), homeworkFilter.size(), Sort.by(homeworkFilter.sortBy()!=null?homeworkFilter.sortBy():"id").ascending());
+        Page<Homework> page = homeworkRepository.findByAllHomework(homeworkFilter.title(),homeworkFilter.groupId(),pageRequest);
+        List<HomeworkResponseDto>  responseDtoList = page.stream().map(homeworkMapper::toResponseDto).toList();
+        cacheManagerService.put(homeworkFilter.hashCode()+"", CachePrefix.HOMEWORK, new DataDto<>(responseDtoList));
+        return new DataDto<>(responseDtoList);
     }
 }

@@ -3,6 +3,7 @@ package uz.java.spring_boot_application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.java.spring_boot_application.dto.DataDto;
 import uz.java.spring_boot_application.dto.room.RoomFilter;
 import uz.java.spring_boot_application.dto.room.RoomRequest;
 import uz.java.spring_boot_application.dto.room.RoomResponse;
@@ -25,13 +26,19 @@ public class RoomService {
     private final CacheManagerService cacheManagerService;
 
     @Transactional(readOnly = true)
-    public List<RoomResponse> getAll(RoomFilter filter) {
+    public DataDto<List<RoomResponse>> getAll(RoomFilter filter) {
+        Object data = cacheManagerService.get(filter.hashCode() + "", CachePrefix.ROOM);
+        if (data !=null){
+            return (DataDto<List<RoomResponse>>) data;
+        }
         RoomSpecification spec = new RoomSpecification(filter);
         List<Room> list = roomRepository.findAll(spec, SearchSpecification.getPageable(
                 filter.getPage(), filter.getLimit(), filter.getSortBy()
         )).toList();
 
-        return list.stream().map(roomMapper::toResponse).toList();
+        List<RoomResponse> response = list.stream().map(roomMapper::toResponse).toList();
+        cacheManagerService.put(filter.hashCode() + "", CachePrefix.ROOM, new DataDto<>(response));
+        return new DataDto<>(response);
     }
 
     @Transactional(readOnly = true)
@@ -52,6 +59,7 @@ public class RoomService {
     public Long create(RoomRequest roomRequest) {
         Room entity = roomMapper.toEntity(roomRequest);
         Room save = roomRepository.save(entity);
+        cacheManagerService.delete(CachePrefix.ROOM);
         return save.getId();
     }
     @Transactional
@@ -60,7 +68,10 @@ public class RoomService {
                 () -> new GenericNotFoundException("room.not.found")
         );
         roomMapper.updateFromRequest(roomRequest, room);
-        return roomRepository.save(room).getId();
+
+        Long id1 = roomRepository.save(room).getId();
+        cacheManagerService.delete(CachePrefix.ROOM);
+        return id1;
     }
     @Transactional
     public Boolean delete(Long id) {
@@ -69,6 +80,7 @@ public class RoomService {
         );
         room.markAsDeleted();
         roomRepository.save(room);
+        cacheManagerService.delete(CachePrefix.ROOM);
         return true;
     }
 }
