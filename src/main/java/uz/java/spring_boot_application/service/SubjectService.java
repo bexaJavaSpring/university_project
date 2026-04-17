@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import uz.java.spring_boot_application.config.UserSession;
+import uz.java.spring_boot_application.dto.DataDto;
 import uz.java.spring_boot_application.dto.subject.SubjectFilter;
 import uz.java.spring_boot_application.dto.subject.SubjectRequest;
 import uz.java.spring_boot_application.dto.subject.SubjectResponse;
@@ -34,13 +35,15 @@ public class SubjectService {
         Subjects subject = subjectRepository.findById(subjectRequest.getSubjectId()).orElse(null);
         if (subject == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Subject not found");
-        return subjectRepository.save(subject).getId();
+        subjectRepository.save(subject);
+        cacheManagerService.delete(CachePrefix.SUBJECT);
+        return subject.getId();
     }
 
     @Transactional(readOnly = true)
-    public SubjectResponse getOne(Long id){
+    public SubjectResponse getOne(Long id) {
         Object data = cacheManagerService.get(id.toString(), CachePrefix.SUBJECT);
-        if (data != null){
+        if (data != null) {
             return (SubjectResponse) data;
         }
         Subjects subject = subjectRepository.findById(id).orElseThrow(
@@ -55,11 +58,17 @@ public class SubjectService {
     }
 
     @Transactional(readOnly = true)
-    public List<SubjectResponse> getAll(SubjectFilter filter) {
+    public DataDto<List<SubjectResponse>> getAll(SubjectFilter filter) {
+        Object data = cacheManagerService.get(filter.hashCode() + "", CachePrefix.SUBJECT);
+        if (data != null) {
+            return (DataDto<List<SubjectResponse>>) data;
+        }
         SubjectSpecification spec = new SubjectSpecification(filter);
         List<Subjects> all = subjectRepository.findAll(spec, SearchSpecification.getPageable(filter.getPage(),
                 filter.getLimit(), filter.getSortBy())).toList();
-        return all.stream().map(subjectMapper::toResponse).toList();
+        List<SubjectResponse> response = all.stream().map(subjectMapper::toResponse).toList();
+        cacheManagerService.put(filter.hashCode() + "", CachePrefix.SUBJECT, new DataDto<>(response));
+        return new DataDto<>(response);
     }
 
     @Transactional
@@ -69,7 +78,9 @@ public class SubjectService {
         );
 
         subjectMapper.updateFromRequest(subjectRequest, subject);
-        return subjectRepository.save(subject).getId();
+        subjectRepository.save(subject);
+        cacheManagerService.delete(CachePrefix.SUBJECT);
+        return subject.getId();
     }
 
     @Transactional
@@ -80,7 +91,7 @@ public class SubjectService {
 
         subject.markAsDeleted();
         subjectRepository.save(subject);
-
+        cacheManagerService.delete(CachePrefix.SUBJECT);
         return true;
     }
 }

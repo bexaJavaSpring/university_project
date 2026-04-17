@@ -2,13 +2,14 @@ package uz.java.spring_boot_application.dto.university;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UniversityResponse {
+public class UniversityResponse implements Serializable {
     private Long id;
     private String name;
     private String address;

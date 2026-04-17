@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import uz.java.spring_boot_application.config.UserSession;
+import uz.java.spring_boot_application.dto.DataDto;
 import uz.java.spring_boot_application.dto.user.TeacherFilter;
 import uz.java.spring_boot_application.dto.user.TeacherRequest;
 import uz.java.spring_boot_application.dto.user.TeacherResponse;
@@ -36,9 +37,9 @@ public class TeacherService {
     private final UserSession userSession;
 
     @Transactional(readOnly = true)
-    public TeacherResponse getOne(Long id){
+    public TeacherResponse getOne(Long id) {
         Object data = cacheManagerService.get(id.toString(), CachePrefix.TEACHER);
-        if (data != null){
+        if (data != null) {
             return (TeacherResponse) data;
         }
         Teacher teacher = teacherRepository.findById(id).orElseThrow(
@@ -54,7 +55,11 @@ public class TeacherService {
     }
 
     @Transactional(readOnly = true)
-    public List<TeacherResponse> getAll(TeacherFilter filter) {
+    public DataDto<List<TeacherResponse>> getAll(TeacherFilter filter) {
+        Object data = cacheManagerService.get(filter.hashCode() + "", CachePrefix.TEACHER);
+        if (data != null) {
+            return (DataDto<List<TeacherResponse>>) data;
+        }
         int page = filter.page() != null ? filter.page() : 0;
         int limit = filter.limit() != null ? filter.limit() : 10;
         PageRequest pageRequest = PageRequest.of(
@@ -66,7 +71,9 @@ public class TeacherService {
                 filter.facultyId(),
                 filter.subjectId(),
                 pageRequest);
-        return all.stream().map(teacherMapper::toResponse).toList();
+        List<TeacherResponse> response =  all.stream().map(teacherMapper::toResponse).toList();
+        cacheManagerService.put(filter.hashCode() + "", CachePrefix.TEACHER, new DataDto<>(response));
+        return new DataDto<>(response);
     }
 
     @Transactional
@@ -78,7 +85,9 @@ public class TeacherService {
         if (subject == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Subject not found");
         Teacher teacher = teacherMapper.toEntity(teacherRequest);
-        return teacherRepository.save(teacher).getId();
+        teacherRepository.save(teacher);
+        cacheManagerService.delete(CachePrefix.TEACHER);
+        return teacher.getId();
     }
 
     @Transactional
@@ -98,6 +107,7 @@ public class TeacherService {
             );
         }
         teacherRepository.save(teacher);
+        cacheManagerService.delete(CachePrefix.TEACHER);
         return teacherId;
     }
 
@@ -108,7 +118,7 @@ public class TeacherService {
         );
         teacher.markAsDeleted();
         teacherRepository.save(teacher);
-
+        cacheManagerService.delete(CachePrefix.TEACHER);
         return true;
     }
 }
