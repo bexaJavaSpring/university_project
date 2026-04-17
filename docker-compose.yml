@@ -28,7 +28,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - university-net
 
@@ -41,8 +41,12 @@ services:
     command: [ "redis-server", "--appendonly", "yes"]
     volumes:
       - redis_data:/data
+    networks:
+      - university-net
+
   redis-commander:
     image: rediscommander/redis-commander:latest
+    platform: linux/amd64
     container_name: redis-commander
     ports:
       - "8081:8081"
@@ -52,6 +56,9 @@ services:
       - HTTP_PASSWORD=12345
     depends_on:
       - redis
+    networks:
+      - university-net
+
 volumes:
   minio_data:
   pg_data:

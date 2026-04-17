@@ -32,7 +32,7 @@ public class JwtUtil {
                 .setClaims(extraClaims)
                 .setSubject(subject)
                 .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plus(5, ChronoUnit.HOURS)))
+                .setExpiration(Date.from(now.plus(1, ChronoUnit.YEARS)))
                 .signWith(getSignInKey(secret), SignatureAlgorithm.HS256)
                 .compact();
     }
