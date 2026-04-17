@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import uz.java.spring_boot_application.dto.homework.HomeworkFilter;
 import uz.java.spring_boot_application.dto.homework.HomeworkRequestDto;
 import uz.java.spring_boot_application.service.HomeworkService;
 
@@ -23,6 +24,15 @@ public class HomeworkController {
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody HomeworkRequestDto dto){
         return ResponseEntity.ok(homeworkService.update(id,dto));
+    }
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAnyRole('TEACHER','SUPERADMIN')")
+    public ResponseEntity<?> getAll(@RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "10") int size,
+                                    @RequestParam(required = false) String sortBy,
+                                    @RequestParam(required = false) String title,
+                                    @RequestParam(required = false) Long groupId){
+        return ResponseEntity.ok(homeworkService.getAll(new HomeworkFilter(page,size,sortBy,title,groupId)));
     }
     @GetMapping("/getOne/{id}")
     @PreAuthorize("hasAnyRole('TEACHER','STUDENT')")

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uz.java.spring_boot_application.dto.DataDto;
 import uz.java.spring_boot_application.dto.user.UserRequest;
 import uz.java.spring_boot_application.dto.user.UserResponse;
 import uz.java.spring_boot_application.service.UserService;
@@ -19,9 +20,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserResponse>> getAll()
+    public ResponseEntity<DataDto<List<UserResponse>>> getAll()
     {
-        List<UserResponse> all = userService.getAll();
+        DataDto<List<UserResponse>> all = userService.getAll();
         return new ResponseEntity<>(all, HttpStatus.OK);
     }
 
