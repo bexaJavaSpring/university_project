@@ -16,20 +16,6 @@ services:
     networks:
       - university-net
 
-  postgres:
-    image: postgres:17
-    container_name: postgres
-    environment:
-      POSTGRES_USER: university
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: university
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
-    networks:
-      - university-net
-
   redis:
     image: redis:latest
     container_name: redis
@@ -63,7 +49,7 @@ services:
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: keycloak
     ports:
-      - "5434:5434"
+      - "5432:5432"
     volumes:
       - keycloak_db_data:/var/lib/postgresql/data
 
@@ -90,7 +76,6 @@ services:
 
 volumes:
   minio_data:
-  pg_data:
   redis_data:
   keycloak_db_data:
 
