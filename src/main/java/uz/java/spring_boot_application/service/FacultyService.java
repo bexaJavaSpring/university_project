@@ -66,10 +66,11 @@ public class FacultyService {
     }
     @Transactional
     public Long create(FacultyRequest request) {
-        universityRepository.findById(request.getUniversityId()).orElseThrow(
+        University university = universityRepository.findById(request.getUniversityId()).orElseThrow(
                 () -> new GenericNotFoundException("university.not.found")
         );
         Faculty faculty = mapper.toEntity(request);
+        faculty.setUniversity(university);
         facultyRepository.save(faculty);
         return faculty.getId();
     }

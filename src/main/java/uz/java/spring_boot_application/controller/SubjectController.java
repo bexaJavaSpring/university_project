@@ -30,17 +30,17 @@ public class SubjectController {
         return ResponseEntity.ok(subjectService.getAll(new SubjectFilter(page, limit, sortBy, name)));
     }
 
-    @PostMapping()
+    @PostMapping("/{id}")
     public ResponseEntity<?> addSubject(@RequestBody SubjectRequest subjectRequest) {
         return ResponseEntity.ok(subjectService.create(subjectRequest));
     }
 
-    @PostMapping("/id")
-    public ResponseEntity<?> updateTeacher(@PathVariable Long id, @RequestBody SubjectRequest subjectRequest) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateSubject(@PathVariable Long id, @RequestBody SubjectRequest subjectRequest) {
         return ResponseEntity.ok(subjectService.update(subjectRequest, id));
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSubject(@PathVariable Long id) {
         return ResponseEntity.ok(subjectService.delete(id));
     }

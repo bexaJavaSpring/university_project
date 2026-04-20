@@ -19,6 +19,4 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
         return ResponseEntity.ok(authService.login(username, password));
     }
-
-
 }

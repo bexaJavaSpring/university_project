@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uz.java.spring_boot_application.dto.student.StudentFilter;
 import uz.java.spring_boot_application.dto.student.StudentRequest;
 import uz.java.spring_boot_application.dto.student.StudentResponse;
 import uz.java.spring_boot_application.service.StudentService;
@@ -19,8 +20,13 @@ public class StudentController {
     private final StudentService studentService;
 
     @GetMapping
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(studentService.getAll());
+    public ResponseEntity<?> getAll(
+            @RequestParam Integer page,
+            @RequestParam Integer limit,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) Integer age
+    ) {
+        return ResponseEntity.ok(studentService.getAll(new StudentFilter(page, limit, sortBy, age)));
     }
 
     @GetMapping("/{id}")

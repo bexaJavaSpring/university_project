@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -32,7 +33,7 @@ public class JwtUtil {
                 .setClaims(extraClaims)
                 .setSubject(subject)
                 .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plus(1, ChronoUnit.YEARS)))
+                .setExpiration(Date.from(now.plus(Duration.ofDays(365))))
                 .signWith(getSignInKey(secret), SignatureAlgorithm.HS256)
                 .compact();
     }

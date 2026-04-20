@@ -1,10 +1,13 @@
 package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.dto.DataDto;
 import uz.java.spring_boot_application.dto.group.GroupResponse;
+import uz.java.spring_boot_application.dto.student.StudentFilter;
 import uz.java.spring_boot_application.dto.student.StudentRequest;
 import uz.java.spring_boot_application.dto.student.StudentResponse;
 import uz.java.spring_boot_application.entities.Student;
@@ -24,15 +27,15 @@ public class StudentService {
     private final CacheManagerService cacheManagerService;
 
     @Transactional(readOnly = true)
-    public DataDto<List<StudentResponse>> getAll() {
-        Object data = cacheManagerService.get(studentMapper.hashCode() + "", CachePrefix.STUDENT);
+    public DataDto<List<StudentResponse>> getAll(StudentFilter filter) {
+        Object data = cacheManagerService.get(filter.hashCode() + "", CachePrefix.STUDENT);
         if (data != null) {
             return (DataDto<List<StudentResponse>>) data;
         }
         List<StudentResponse> response =  studentRepository.findAll().stream().map(
                 studentMapper::toResponse
         ).toList();
-        cacheManagerService.put(studentMapper.hashCode() + "", CachePrefix.STUDENT, new DataDto<>(response));
+        cacheManagerService.put(filter.hashCode() + "", CachePrefix.STUDENT, new DataDto<>(response));
         return new DataDto<>(response);
     }
 
