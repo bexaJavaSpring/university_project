@@ -1,17 +1,18 @@
 package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uz.java.spring_boot_application.config.UserSession;
 import uz.java.spring_boot_application.dto.DataDto;
+import uz.java.spring_boot_application.dto.user.UserFilter;
 import uz.java.spring_boot_application.dto.user.UserRequest;
 import uz.java.spring_boot_application.dto.user.UserResponse;
 import uz.java.spring_boot_application.entities.User;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.mapper.UserMapper;
 import uz.java.spring_boot_application.repository.UserRepository;
+import uz.java.spring_boot_application.specification.SearchSpecification;
+import uz.java.spring_boot_application.specification.UserSpecification;
 import uz.java.spring_boot_application.util.CachePrefix;
 
 import java.util.List;
@@ -25,10 +26,16 @@ public class UserService {
     private final CacheManagerService cacheManagerService;
 
     @Transactional(readOnly = true)
-    public DataDto<List<UserResponse>> getAll() {
+    public DataDto<List<UserResponse>> getAll(UserFilter userFilter) {
         String key = "USERS_KEY";
-        cacheManagerService.get(key,CachePrefix.USER);
-        List<User> all = userRepository.findAll();
+        Object data = cacheManagerService.get(key, CachePrefix.USER);
+        if (data !=null){
+            return (DataDto<List<UserResponse>>) data;
+        }
+        UserSpecification specification = new UserSpecification(userFilter);
+        List<User> all = userRepository.findAll(specification, SearchSpecification.getPageable(
+                userFilter.page(),userFilter.size(),userFilter.sortBy())).toList();
+
         List<UserResponse> list = all.stream().map(userMapper::toResponse).toList();
         cacheManagerService.put(key, CachePrefix.USER, new DataDto<>(list));
         return new DataDto<>(list);
