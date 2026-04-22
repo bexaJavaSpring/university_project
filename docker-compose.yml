@@ -65,8 +65,8 @@ services:
       KC_DB_URL_DATABASE: keycloak
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: keycloak
-      KC_BOOTSTRAP_KEYCLOAK_ADMIN: keycloakAdmin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: keycloakAdmin@1234
+      KEYCLOAK_ADMIN: keycloakAdmin
+      KEYCLOAK_ADMIN_PASSWORD: keycloakAdmin@1234
       KC_HOSTNAME: localhost
       KC_HTTP_ENABLED: true
     ports:

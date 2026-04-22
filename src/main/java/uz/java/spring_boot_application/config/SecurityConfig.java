@@ -49,6 +49,7 @@ public class SecurityConfig {
             "/webjars",
             "/auth/login",
             "/files/upload",
+            "/users/create",
             // vaqtincha Firebase uchun
             "/home",
             "/home/**",

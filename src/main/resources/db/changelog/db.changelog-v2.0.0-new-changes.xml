@@ -421,4 +421,9 @@
                              tableName="user_fcm_token"/>
     </changeSet>
 
+    <changeSet id="1776876865985-1" author="bekhruz_web">
+        <addColumn tableName="users">
+            <column name="keycloak_user_id" type="varchar"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

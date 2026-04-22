@@ -27,6 +27,8 @@ public class User extends Auditable {
 
     private String email;
 
+    private String keycloakUserId;
+
     @Column(unique = true)
     private String username;
 

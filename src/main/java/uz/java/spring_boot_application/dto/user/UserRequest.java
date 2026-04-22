@@ -12,9 +12,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequest {
-    String phone;
+    String email;
     String firstName;
     String lastName;
     LocalDate birthDate;
     Gender gender;
+    String username;
+    String password;
 }

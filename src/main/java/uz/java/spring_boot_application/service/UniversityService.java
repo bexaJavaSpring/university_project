@@ -32,7 +32,7 @@ public class UniversityService {
     private final ZamdekanRepository zamdekanRepository;
     private final FacultyRepository facultyRepository;
     private final UserRepository userRepository;
-    private final NotificationService notificationService;
+//    private final NotificationService notificationService;
     private final CacheManagerService cacheManagerService;
 
     @Value("${firebase.token}")
@@ -69,7 +69,7 @@ public class UniversityService {
         University university = universityMapper.toEntity(request);
         University response = universityRepository.save(university);
         cacheManagerService.delete(CachePrefix.UNIVERSITY);
-        notificationService.sendNotification(fcmToken);
+//        notificationService.sendNotification(fcmToken);
         return response.getId();
     }
 

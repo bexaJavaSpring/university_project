@@ -21,9 +21,9 @@ public class JwtTokenService {
         return jwtUtil.isTokenValid(token, getTokenSecret());
     }
 
-    public String generateToken(@NonNull String subject) {
-        return jwtUtil.jwt(new HashMap<>(), subject, getTokenSecret());
-    }
+//    public String generateToken(@NonNull String subject) {
+//        return jwtUtil.jwt(new HashMap<>(), subject, getTokenSecret());
+//    }
 
     public String subject(String token) {
         return jwtUtil.getSubject(token, getTokenSecret());

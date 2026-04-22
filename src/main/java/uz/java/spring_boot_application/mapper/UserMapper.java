@@ -1,9 +1,6 @@
 package uz.java.spring_boot_application.mapper;
 
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import uz.java.spring_boot_application.dto.user.UserRequest;
 import uz.java.spring_boot_application.dto.user.UserResponse;
 import uz.java.spring_boot_application.entities.User;
@@ -11,8 +8,10 @@ import uz.java.spring_boot_application.entities.User;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    public UserResponse toResponse(User user);
+    UserResponse toResponse(User user);
 
+    @Mapping(target = "keycloakUserId", ignore = true)
+    @Mapping(target = "password", ignore = true)
     User toEntity(UserRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
