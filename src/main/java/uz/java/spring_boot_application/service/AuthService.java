@@ -22,14 +22,15 @@ public class AuthService {
     private final SessionUserRepository sessionUserRepository;
     private final JwtTokenService jwtTokenService;
     private final CustomAuthenticationProvider authenticationProvider;
-    private final CacheManagerService cacheManagerService;
 
-    public AuthService(UserRepository userRepository, SessionUserRepository sessionUserRepository, JwtTokenService jwtTokenService, CustomAuthenticationProvider authenticationProvider, CacheManagerService cacheManagerService) {
+    public AuthService(UserRepository userRepository,
+                       SessionUserRepository sessionUserRepository,
+                       JwtTokenService jwtTokenService,
+                       CustomAuthenticationProvider authenticationProvider) {
         this.userRepository = userRepository;
         this.sessionUserRepository = sessionUserRepository;
         this.jwtTokenService = jwtTokenService;
         this.authenticationProvider = authenticationProvider;
-        this.cacheManagerService = cacheManagerService;
     }
 
     public LoginResponse login(String username, String password) {
