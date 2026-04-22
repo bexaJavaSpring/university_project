@@ -22,13 +22,13 @@ import java.util.Map;
 @Slf4j
 public class NotificationService {
 
-    private final FirebaseMessaging firebaseMessagingUniversity;
+    private final FirebaseMessaging firebaseMessagingUniversityApp;
     private final NotificationRepository notificationRepository;
     private final UserSession userSession;
 
     public NotificationService(
-            @Qualifier("university-app-firebase") FirebaseMessaging firebaseMessagingUniversity, NotificationRepository notificationRepository, UserSession userSession) {
-        this.firebaseMessagingUniversity = firebaseMessagingUniversity;
+            @Qualifier("university-app-firebase") FirebaseMessaging firebaseMessagingUniversityApp, NotificationRepository notificationRepository, UserSession userSession) {
+        this.firebaseMessagingUniversityApp = firebaseMessagingUniversityApp;
         this.notificationRepository = notificationRepository;
         this.userSession = userSession;
     }
@@ -46,7 +46,7 @@ public class NotificationService {
                     .setToken(fcmToken);
 
             messageBuilder.setNotification(FcmAppConfig.getNotification(notify));
-            firebaseMessagingUniversity.send(messageBuilder.build());
+            firebaseMessagingUniversityApp.send(messageBuilder.build());
             MulticastMessage.builder()
                     .setAndroidConfig(FcmAppConfig.androidConfig(notify))
                     .putAllData(Map.of("title", notify.getTitle()))
@@ -78,7 +78,7 @@ public class NotificationService {
                     .setNotification(FcmAppConfig.getNotification(notify))
                     .build();
 
-            firebaseMessagingUniversity.send(message);
+            firebaseMessagingUniversityApp.send(message);
         } catch (FirebaseMessagingException e) {
             log.error("Error sending push notification: " + e.getErrorCode(), e);
         }
