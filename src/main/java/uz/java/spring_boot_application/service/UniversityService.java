@@ -1,16 +1,15 @@
 package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.dto.DataDto;
+import uz.java.spring_boot_application.dto.notification.NotificationRequest;
 import uz.java.spring_boot_application.dto.university.UniversityFilter;
 import uz.java.spring_boot_application.dto.university.UniversityRequest;
 import uz.java.spring_boot_application.dto.university.UniversityResponse;
-import uz.java.spring_boot_application.entities.Faculty;
-import uz.java.spring_boot_application.entities.University;
-import uz.java.spring_boot_application.entities.User;
-import uz.java.spring_boot_application.entities.Zamdekan;
+import uz.java.spring_boot_application.entities.*;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.mapper.UniversityMapper;
 import uz.java.spring_boot_application.repository.FacultyRepository;
@@ -36,6 +35,8 @@ public class UniversityService {
     private final NotificationService notificationService;
     private final CacheManagerService cacheManagerService;
 
+    @Value("${firebase.token}")
+    private String fcmToken;
 
     @Transactional(readOnly = true)
     public DataDto<List<UniversityResponse>> getAll(UniversityFilter filter) {
@@ -67,8 +68,8 @@ public class UniversityService {
     public Long create(UniversityRequest request) {
         University university = universityMapper.toEntity(request);
         University response = universityRepository.save(university);
-        notificationService.sendNotification("Universitet saqlandi!");
         cacheManagerService.delete(CachePrefix.UNIVERSITY);
+        notificationService.sendNotification(fcmToken);
         return response.getId();
     }
 

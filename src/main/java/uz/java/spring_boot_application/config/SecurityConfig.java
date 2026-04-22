@@ -39,13 +39,28 @@ public class SecurityConfig {
             "/webjars/**",
             "/webjars",
             "/auth/login",
-            "/files/upload"
+            "/files/upload",
+            // vaqtincha
+            "/home",
+            "/home/**",
+            "/.well-known/appspecific/com.chrome.devtools.json",
+            "/firebase-messaging-sw.js"
     };
     //     Basic authorization
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // vaqtincha
+                        .requestMatchers(
+                                "/",
+                                "/index",
+                                "/firebase-messaging-sw.js",
+                                "/favicon.ico",
+                                "/*.js",
+                                "/*.css",
+                                "/**"
+                        ).permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 )

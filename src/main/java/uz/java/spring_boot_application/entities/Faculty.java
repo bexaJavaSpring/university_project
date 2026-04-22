@@ -14,7 +14,7 @@ import lombok.Setter;
 @Table(name = "faculties")
 public class Faculty extends Auditable {
 
-    @Column(unique = true, /*nullable = false*/  length = 100)
+    @Column(unique = true, /*nullable = false*/  length = 100, name = "nomi")
     private String name;
 
     private String address;
