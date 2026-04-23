@@ -17,7 +17,7 @@ public class NotificationEntity extends Auditable {
     @Column(name = "title")
     String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String body;
 
     private String imageUrl;
@@ -30,11 +30,9 @@ public class NotificationEntity extends Auditable {
     private String topic;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private NotificationType type;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private NotificationStatus status;
 
     private String messageId;

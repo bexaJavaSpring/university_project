@@ -45,7 +45,8 @@ public class SecurityConfig {
             "/home/**",
             "/.well-known/appspecific/com.chrome.devtools.json",
             "/firebase-messaging-sw.js",
-            "/fcmtoken/save-token"
+            "/fcmtoken/save-token",
+            "/fcmtoken/send-notification"
     };
 
     //     Basic authorization
@@ -56,6 +57,7 @@ public class SecurityConfig {
                         // vaqtincha Firebase uchun
                         .requestMatchers(
                                 "/",
+                                "/1",
                                 "/index",
                                 "/firebase-messaging-sw.js",
                                 "/favicon.ico",

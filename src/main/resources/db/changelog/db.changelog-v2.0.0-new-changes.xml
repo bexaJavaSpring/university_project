@@ -357,7 +357,6 @@
                     type="VARCHAR(255)"/>
             <column name="body"
                     type="TEXT">
-                <constraints nullable="false"/>
             </column>
             <column name="image_url"
                     type="VARCHAR(255)"/>
@@ -369,11 +368,9 @@
                     type="VARCHAR(255)"/>
             <column name="type"
                     type="VARCHAR(255)">
-                <constraints nullable="false"/>
             </column>
             <column name="status"
                     type="VARCHAR(255)">
-                <constraints nullable="false"/>
             </column>
             <column name="message_id"
                     type="VARCHAR(255)"/>
@@ -384,41 +381,6 @@
             <column name="failure_count"
                     type="INT"/>
         </createTable>
-    </changeSet>
-
-    <changeSet id="1776842213093-1"
-               author="lenovo">
-        <createTable tableName="user_fcm_token">
-            <column autoIncrement="true"
-                    name="id"
-                    type="BIGINT">
-                <constraints nullable="false"
-                             primaryKey="true"
-                             primaryKeyName="pk_userfcmtoken"/>
-            </column>
-            <column name="user_id"
-                    type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="token"
-                    type="VARCHAR(500)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="device_type"
-                    type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="active"
-                    type="BOOLEAN">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet id="1776842213093-2"
-               author="lenovo">
-        <addUniqueConstraint columnNames="token"
-                             constraintName="uc_userfcmtoken_token"
-                             tableName="user_fcm_token"/>
     </changeSet>
 
 </databaseChangeLog>

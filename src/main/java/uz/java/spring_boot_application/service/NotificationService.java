@@ -1,13 +1,7 @@
 package uz.java.spring_boot_application.service;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.MulticastMessage;
+import com.google.firebase.messaging.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import uz.java.spring_boot_application.config.FcmAppConfig;
 import uz.java.spring_boot_application.config.UserSession;
@@ -16,19 +10,15 @@ import uz.java.spring_boot_application.entities.NotificationEntity;
 import uz.java.spring_boot_application.repository.NotificationRepository;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
 public class NotificationService {
 
-    private final FirebaseMessaging firebaseMessagingUniversityApp;
     private final NotificationRepository notificationRepository;
     private final UserSession userSession;
 
-    public NotificationService(
-            @Qualifier("university-app-firebase") FirebaseMessaging firebaseMessagingUniversityApp, NotificationRepository notificationRepository, UserSession userSession) {
-        this.firebaseMessagingUniversityApp = firebaseMessagingUniversityApp;
+    public NotificationService(NotificationRepository notificationRepository, UserSession userSession) {
         this.notificationRepository = notificationRepository;
         this.userSession = userSession;
     }
@@ -41,18 +31,30 @@ public class NotificationService {
             Message message = Message.builder()
                     .setToken(fcmToken)
                     .setNotification(FcmAppConfig.getNotification(notify))
-                    .setAndroidConfig(FcmAppConfig.androidConfig(notify))
-                    .setApnsConfig(FcmAppConfig.apnsConfig(notify))
-                    .setWebpushConfig(FcmAppConfig.webPushConfig(notify))
-                    .setFcmOptions(FcmAppConfig.fcmOptions())
+                    .setWebpushConfig(WebpushConfig.builder()
+                            .setNotification(WebpushNotification.builder()
+                                    .setTitle(notify.getTitle())
+                                    .setBody(notify.getBody())
+                                    .build())
+                            .build())
                     .build();
-
-            String response = firebaseMessagingUniversityApp.send(message);
-
+            String response = FirebaseMessaging.getInstance().send(message);
             log.info("Successfully sent message: {}", response);
-
         } catch (FirebaseMessagingException e) {
             log.error("Error sending push notification: " + e.getErrorCode(), e);
+        }
+    }
+
+    public void saveToken(String token) {
+        boolean exists = notificationRepository.findAll()
+                .stream()
+                .anyMatch(n -> token.equals(n.getToken()));
+
+        if (!exists) {
+            NotificationEntity entity = new NotificationEntity();
+            entity.setToken(token);
+            notificationRepository.save(entity);
+            System.out.println("✅ Token saqlandi: " + token);
         }
     }
 
@@ -68,12 +70,11 @@ public class NotificationService {
                     .setNotification(FcmAppConfig.getNotification(notify))
                     .build();
 
-            firebaseMessagingUniversityApp.send(message);
+            String response = FirebaseMessaging.getInstance().send(message);
         } catch (FirebaseMessagingException e) {
             log.error("Error sending push notification: " + e.getErrorCode(), e);
         }
     }
-
 
 
     public void create(NotificationRequest request) {
@@ -86,4 +87,28 @@ public class NotificationService {
         notificationRepository.save(entity);
     }
 
+    public void sendToAll(String title, String body) {
+        List<NotificationEntity> all = notificationRepository.findAll();
+
+        for (NotificationEntity entity : all) {
+            try {
+                Message message = Message.builder()
+                        .setToken(entity.getToken())
+                        .setNotification(FcmAppConfig.getNotification(entity))
+                        .setWebpushConfig(WebpushConfig.builder()
+                                .setNotification(WebpushNotification.builder()
+                                        .setTitle(title)
+                                        .setBody(body)
+                                        .build())
+                                .build())
+                        .build();
+
+                String response = FirebaseMessaging.getInstance().send(message);
+                System.out.println("✅ Yuborildi: " + response);
+
+            } catch (FirebaseMessagingException e) {
+                System.out.println("❌ Xato: " + e.getMessage());
+            }
+        }
+    }
 }

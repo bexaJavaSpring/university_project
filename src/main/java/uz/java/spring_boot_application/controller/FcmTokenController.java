@@ -22,7 +22,13 @@ public class FcmTokenController {
     @PostMapping("/save-token")
     public ResponseEntity<String> saveToken(@RequestBody Map<String, String> body) {
         String token = body.get("token");
-        notificationService.sendNotification(token);
+        notificationService.saveToken(token);
         return ResponseEntity.ok("OK");
+    }
+
+    @PostMapping("/send-notification")
+    public ResponseEntity<String> sendNotification(@RequestBody Map<String, String> body) {
+        notificationService.sendToAll(body.get("title"), body.get("body"));
+        return ResponseEntity.ok("Yuborildi ✅");
     }
 }

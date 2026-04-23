@@ -1,76 +1,102 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>FCM Token</title>
+    <title>University App</title>
 </head>
 <body>
 
-<h2>FCM Token olish</h2>
-<button onclick="getToken()">Token olish</button>
-<p id="token"></p>
+<h2>Notification Test</h2>
 
-<!-- Firebase CDN (compat versiya - oddiy script uchun eng qulay) -->
+<!-- Token olish -->
+<button onclick="getToken()">Token olish</button>
+
+<!-- Notification yuborish -->
+<div style="margin-top: 20px;">
+    <input type="text" id="title" placeholder="Notification title"/>
+    <input type="text" id="body" placeholder="Notification body"/>
+    <button onclick="sendNotification()">Notification yuborish</button>
+</div>
+
+<p id="status"></p>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
 
 <script>
-    const firebaseConfig = {
+    firebase.initializeApp({
         apiKey: "AIzaSyBpBCO9zKrD76p_bI-CSfNtwL89bPsPq5g",
         authDomain: "university-app-a65e3.firebaseapp.com",
         projectId: "university-app-a65e3",
         storageBucket: "university-app-a65e3.firebasestorage.app",
         messagingSenderId: "87286361837",
-        appId: "1:87286361837:web:7779cc7dffeac29314e6e4",
-        measurementId: "G-WD800GXQ56"
-    };
+        appId: "1:87286361837:web:7779cc7dffeac29314e6e4"
+    });
 
-    firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
+    let fcmToken = null;
 
+    // Token olish
     window.getToken = async function () {
         try {
             const permission = await Notification.requestPermission();
-
             if (permission !== "granted") {
-                alert("Notification permission berilmadi ❌");
+                alert("Permission berilmadi ❌");
                 return;
             }
 
-            const token = await messaging.getToken({
-                vapidKey: "BOr2FB8-x79PJb3JueBKA0j24zXLpvdYCYGx-fsl-8TWRADMS3LHZXhPKNzfZUyiKuIoBDM4jdHC7LdGQ3ZpTsg"
+            const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+
+            fcmToken = await messaging.getToken({
+                vapidKey: "BOr2FB8-x79PJb3JueBKA0j24zXLpvdYCYGx-fsl-8TWRADMS3LHZXhPKNzfZUyiKuIoBDM4jdHC7LdGQ3ZpTsg",
+                serviceWorkerRegistration: registration
             });
 
-            console.log("FCM TOKEN:", token);
-            document.getElementById("token").innerText = "Token: " + token;
+            console.log("✅ Token:", fcmToken);
+            document.getElementById("status").innerText = "Token olindi ✅";
 
-            // Tokenni backendga yuborish
-            await sendTokenToBackend(token);
+            // Backendga saqlash
+            await fetch("/fcmtoken/save-token", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({token: fcmToken})
+            });
 
-        } catch (error) {
-            console.error("Xato:", error);
-            document.getElementById("token").innerText = "Xato: " + error.message;
+        } catch (e) {
+            console.error("❌ Xato:", e);
+            document.getElementById("status").innerText = "Xato: " + e.message;
         }
     }
 
-    async function sendTokenToBackend(token) {
+    // Notification yuborish
+    window.sendNotification = async function () {
+        const title = document.getElementById("title").value;
+        const body = document.getElementById("body").value;
+
+        if (!title || !body) {
+            alert("Title va body kiriting!");
+            return;
+        }
+
         try {
-            const response = await fetch("/fcmtoken/save-token", {
+            const response = await fetch("/fcmtoken/send-notification", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ token: token })
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({title: title, body: body})
             });
 
             if (response.ok) {
-                console.log("Token backendga yuborildi ✅");
-            } else {
-                console.error("Backend xato qaytardi ❌");
+                document.getElementById("status").innerText = "Notification yuborildi ✅";
             }
-        } catch (err) {
-            console.error("Backend ga yuborishda xato:", err);
+        } catch (e) {
+            document.getElementById("status").innerText = "Xato: " + e.message;
         }
     }
+
+    // Foreground notification
+    messaging.onMessage(function (payload) {
+        console.log("Xabar keldi:", payload);
+        alert("📬 " + payload.notification.title + "\n" + payload.notification.body);
+    });
 </script>
 
 </body>
