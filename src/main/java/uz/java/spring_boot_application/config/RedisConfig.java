@@ -43,7 +43,6 @@ public class RedisConfig {
     public void clearCache() {
         System.out.println("In Clear Cache");
         Jedis jedis = new Jedis(host, port, 10000); // timeout - shu Jedis ga connection agar bolmasa 10 sekundan kn
-        // avtoatik uziladi
         jedis.flushDB();
         jedis.close();
     }

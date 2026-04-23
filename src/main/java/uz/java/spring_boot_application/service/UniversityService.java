@@ -69,7 +69,6 @@ public class UniversityService {
         University university = universityMapper.toEntity(request);
         University response = universityRepository.save(university);
         cacheManagerService.delete(CachePrefix.UNIVERSITY);
-//        notificationService.sendNotification(fcmToken);
         return response.getId();
     }
 

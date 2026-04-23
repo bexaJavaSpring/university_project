@@ -49,12 +49,7 @@ public class SecurityConfig {
             "/webjars",
             "/auth/login",
             "/files/upload",
-            "/users/create",
-            // vaqtincha Firebase uchun
-            "/home",
-            "/home/**",
-            "/.well-known/appspecific/com.chrome.devtools.json",
-            "/firebase-messaging-sw.js"
+            "/users/create"
     };
 
     //     Basic authorization
@@ -62,16 +57,6 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // vaqtincha Firebase uchun
-                        .requestMatchers(
-                                "/",
-                                "/index",
-                                "/firebase-messaging-sw.js",
-                                "/favicon.ico",
-                                "/*.js",
-                                "/*.css",
-                                "/**"
-                        ).permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 )
