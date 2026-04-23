@@ -6,42 +6,70 @@
 <body>
 
 <h2>FCM Token olish</h2>
-
 <button onclick="getToken()">Token olish</button>
-
 <p id="token"></p>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging.js";
+<!-- Firebase CDN (compat versiya - oddiy script uchun eng qulay) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
 
+<script>
     const firebaseConfig = {
         apiKey: "AIzaSyBpBCO9zKrD76p_bI-CSfNtwL89bPsPq5g",
         authDomain: "university-app-a65e3.firebaseapp.com",
         projectId: "university-app-a65e3",
         storageBucket: "university-app-a65e3.firebasestorage.app",
         messagingSenderId: "87286361837",
-        appId: "1:87286361837:web:7779cc7dffeac29314e6e4"
+        appId: "1:87286361837:web:7779cc7dffeac29314e6e4",
+        measurementId: "G-WD800GXQ56"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const messaging = getMessaging(app);
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
 
     window.getToken = async function () {
-        const permission = await Notification.requestPermission();
+        try {
+            const permission = await Notification.requestPermission();
 
-        if (permission !== "granted") {
-            alert("Permission berilmadi ❌");
-            return;
+            if (permission !== "granted") {
+                alert("Notification permission berilmadi ❌");
+                return;
+            }
+
+            const token = await messaging.getToken({
+                vapidKey: "BOr2FB8-x79PJb3JueBKA0j24zXLpvdYCYGx-fsl-8TWRADMS3LHZXhPKNzfZUyiKuIoBDM4jdHC7LdGQ3ZpTsg"
+            });
+
+            console.log("FCM TOKEN:", token);
+            document.getElementById("token").innerText = "Token: " + token;
+
+            // Tokenni backendga yuborish
+            await sendTokenToBackend(token);
+
+        } catch (error) {
+            console.error("Xato:", error);
+            document.getElementById("token").innerText = "Xato: " + error.message;
         }
+    }
 
-        const token = await getToken(messaging, {
-            vapidKey: "BOr2FB8-x79PJb3JueBKA0j24zXLpvdYCYGx-fsl-8TWRADMS3LHZXhPKNzfZUyiKuIoBDM4jdHC7LdGQ3ZpTsg"
-        });
+    async function sendTokenToBackend(token) {
+        try {
+            const response = await fetch("/fcmtoken/save-token", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ token: token })
+            });
 
-        console.log("TOKEN:", token);
-
-        document.getElementById("token").innerText = token;
+            if (response.ok) {
+                console.log("Token backendga yuborildi ✅");
+            } else {
+                console.error("Backend xato qaytardi ❌");
+            }
+        } catch (err) {
+            console.error("Backend ga yuborishda xato:", err);
+        }
     }
 </script>
 

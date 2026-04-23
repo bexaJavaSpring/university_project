@@ -1,5 +1,7 @@
-importScripts("https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js");
-importScripts("https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js");
+// src/main/resources/static/firebase-messaging-sw.js
+
+importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
 
 firebase.initializeApp({
     apiKey: "AIzaSyBpBCO9zKrD76p_bI-CSfNtwL89bPsPq5g",
@@ -11,3 +13,13 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
+
+// Background notification
+messaging.onBackgroundMessage(function(payload) {
+    console.log('Background xabar keldi:', payload);
+
+    self.registration.showNotification(payload.notification.title, {
+        body: payload.notification.body,
+        icon: '/firebase-logo.png'
+    });
+});

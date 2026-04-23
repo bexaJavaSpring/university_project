@@ -35,32 +35,22 @@ public class NotificationService {
 
 
     public void sendNotification(String fcmToken) {
-        create(new NotificationRequest("Salom", "Salom", NotificationEntity.NotificationType.SINGLE));
+//        create(new NotificationRequest("Salom", "Salom", NotificationEntity.NotificationType.SINGLE));
         NotificationEntity notify = notificationRepository.findById(2L).orElseThrow();
         try {
-            Message.Builder messageBuilder = Message
-                    .builder()
+            Message message = Message.builder()
+                    .setToken(fcmToken)
+                    .setNotification(FcmAppConfig.getNotification(notify))
                     .setAndroidConfig(FcmAppConfig.androidConfig(notify))
                     .setApnsConfig(FcmAppConfig.apnsConfig(notify))
                     .setWebpushConfig(FcmAppConfig.webPushConfig(notify))
-                    .setToken(fcmToken);
-
-            messageBuilder.setNotification(FcmAppConfig.getNotification(notify));
-            firebaseMessagingUniversityApp.send(messageBuilder.build());
-            MulticastMessage.builder()
-                    .setAndroidConfig(FcmAppConfig.androidConfig(notify))
-                    .putAllData(Map.of("title", notify.getTitle()))
-                    .addAllTokens(List.of(fcmToken))
+                    .setFcmOptions(FcmAppConfig.fcmOptions())
                     .build();
-            FirebaseMessaging.getInstance(
-                    FirebaseApp.getInstance("university-app")
-            ).sendMulticast(
-                    MulticastMessage.builder()
-                            .setAndroidConfig(FcmAppConfig.androidConfig(notify))
-                            .putAllData(Map.of("title", notify.getTitle()))
-                            .addAllTokens(List.of(fcmToken))
-                            .build()
-            );
+
+            String response = firebaseMessagingUniversityApp.send(message);
+
+            log.info("Successfully sent message: {}", response);
+
         } catch (FirebaseMessagingException e) {
             log.error("Error sending push notification: " + e.getErrorCode(), e);
         }

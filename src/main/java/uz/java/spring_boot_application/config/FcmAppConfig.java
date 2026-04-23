@@ -6,14 +6,19 @@ import uz.java.spring_boot_application.entities.NotificationEntity;
 import java.util.Map;
 
 public interface FcmAppConfig {
+    // ✅ Android uchun
     static AndroidConfig androidConfig(NotificationEntity notify) {
-
-        String body = notify.getBody();
-
         return AndroidConfig
                 .builder()
                 .setTtl(3600 * 1000)
-                .putAllData(Map.of("data", body))
+                .setPriority(AndroidConfig.Priority.HIGH)
+                .putAllData(Map.of("body", notify.getBody(), "title", notify.getTitle()))
+                .setNotification(AndroidNotification
+                        .builder()
+                        .setTitle(notify.getTitle())
+                        .setBody(notify.getBody())
+                        .setSound("default")
+                        .build())
                 .setFcmOptions(AndroidFcmOptions
                         .builder()
                         .setAnalyticsLabel("android-university-app")
@@ -21,13 +26,19 @@ public interface FcmAppConfig {
                 .build();
     }
 
+    // ✅ iOS (Apple) uchun
     static ApnsConfig apnsConfig(NotificationEntity notify) {
         return ApnsConfig
                 .builder()
                 .setAps(Aps
                         .builder()
                         .setBadge(1)
-                        .putAllCustomData(Map.of("data", notify.getBody()))
+                        .setSound("default")
+                        .setAlert(ApsAlert
+                                .builder()
+                                .setTitle(notify.getTitle())
+                                .setBody(notify.getBody())
+                                .build())
                         .build())
                 .setFcmOptions(ApnsFcmOptions
                         .builder()
@@ -36,13 +47,20 @@ public interface FcmAppConfig {
                 .build();
     }
 
+    // ✅ Web (Browser) uchun
     static WebpushConfig webPushConfig(NotificationEntity notify) {
         return WebpushConfig
                 .builder()
-                .putAllData(Map.of("data", notify.getBody()))
+                .setNotification(WebpushNotification
+                        .builder()
+                        .setTitle(notify.getTitle())
+                        .setBody(notify.getBody())
+                        .setBadge("1")
+                        .build())
                 .build();
     }
 
+    // ✅ Notification object
     static Notification getNotification(NotificationEntity notf) {
         Notification notification = new Notification(
                 notf.getTitle(), notf.getBody()
@@ -50,6 +68,7 @@ public interface FcmAppConfig {
         return notification;
     }
 
+    // ✅ FCM Options
     static FcmOptions fcmOptions() {
         return FcmOptions
                 .builder()

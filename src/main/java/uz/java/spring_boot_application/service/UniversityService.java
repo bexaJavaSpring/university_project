@@ -35,9 +35,6 @@ public class UniversityService {
     private final NotificationService notificationService;
     private final CacheManagerService cacheManagerService;
 
-    @Value("${firebase.token}")
-    private String fcmToken;
-
     @Transactional(readOnly = true)
     public DataDto<List<UniversityResponse>> getAll(UniversityFilter filter) {
         Object data = cacheManagerService.get(filter.hashCode() + "", CachePrefix.UNIVERSITY);
@@ -69,7 +66,6 @@ public class UniversityService {
         University university = universityMapper.toEntity(request);
         University response = universityRepository.save(university);
         cacheManagerService.delete(CachePrefix.UNIVERSITY);
-        notificationService.sendNotification(fcmToken);
         return response.getId();
     }
 
