@@ -10,6 +10,7 @@ import uz.java.spring_boot_application.dto.DataDto;
 import uz.java.spring_boot_application.dto.group.GroupFilter;
 import uz.java.spring_boot_application.dto.group.GroupRequest;
 import uz.java.spring_boot_application.dto.group.GroupResponse;
+import uz.java.spring_boot_application.entities.Faculty;
 import uz.java.spring_boot_application.entities.Group;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.mapper.GroupMapper;
@@ -42,7 +43,7 @@ public class GroupService {
         cacheManagerService.put(filter.hashCode() + "", CachePrefix.GROUP, new DataDto<>(response));
         return new DataDto<>(response);
     }
-
+    @Transactional(readOnly = true)
     public GroupResponse getOne(Long id) {
         Object data = cacheManagerService.get(id.toString(), CachePrefix.GROUP);
         if (data != null) {
@@ -53,6 +54,7 @@ public class GroupService {
         );
 
         GroupResponse response = groupMapper.toResponse(group);
+        response.setFacultyId(group.getFaculty().getId());
         cacheManagerService.put(id.toString(), CachePrefix.GROUP, response);
         return response;
     }

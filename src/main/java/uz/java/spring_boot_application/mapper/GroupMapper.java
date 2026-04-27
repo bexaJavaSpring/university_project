@@ -8,7 +8,6 @@ import uz.java.spring_boot_application.entities.Group;
 @Mapper(componentModel = "spring")
 public interface GroupMapper {
 
-    @Mapping(source = "faculty.id", target = "facultyId")
     GroupResponse toResponse(Group group);
 
     @Mapping(source = "facultyId", target = "faculty.id")

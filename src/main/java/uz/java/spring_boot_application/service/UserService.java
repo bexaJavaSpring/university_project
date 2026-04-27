@@ -4,6 +4,9 @@ import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.jose.jwk.JWK;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,15 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.dto.DataDto;
 import uz.java.spring_boot_application.dto.user.UserRequest;
 import uz.java.spring_boot_application.dto.user.UserResponse;
+import uz.java.spring_boot_application.entities.Role;
 import uz.java.spring_boot_application.entities.User;
 import uz.java.spring_boot_application.exception.AlreadyExistsException;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.exception.GenericRuntimeException;
 import uz.java.spring_boot_application.mapper.UserMapper;
+import uz.java.spring_boot_application.repository.RoleRepository;
 import uz.java.spring_boot_application.repository.UserRepository;
 import uz.java.spring_boot_application.util.CachePrefix;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static jakarta.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
@@ -35,6 +42,7 @@ public class UserService {
     private final CacheManagerService cacheManagerService;
     private final Keycloak keycloak;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     @Value("${app.keycloak.realm}")
     private String realm;
@@ -119,6 +127,11 @@ public class UserService {
         User entity = userMapper.toEntity(request);
         entity.setKeycloakUserId(keycloakUserId);
         entity.setPassword(passwordEncoder.encode(request.getPassword()));
+        Role role =roleRepository.findByCode(request.getRoleCode());
+        if (role == null) {
+            throw new GenericRuntimeException("role.not.found");
+        }
+        entity.setRoles(Set.of(role));
         User save = userRepository.save(entity);
 //        cacheManagerService.delete(CachePrefix.USER);
         return save.getId();
@@ -130,25 +143,53 @@ public class UserService {
                 .searchByUsername(username, false).isEmpty();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Long update(Long userId, UserRequest request) {
-        var user = userRepository.findById(userId).orElseThrow(
+
+       User user = userRepository.findById(userId).orElseThrow(
                 () -> new GenericNotFoundException("user.not.found")
         );
         userMapper.updateFromRequest(user, request);
         userRepository.save(user);
         cacheManagerService.delete(CachePrefix.USER);
+
+
+        UsersResource usersResource = keycloak.realm(realm).users();
+        UserResource userResource = usersResource.get(String.valueOf(userId));
+
+        UserRepresentation userEntity = userResource.toRepresentation();
+        if (request.getFirstName() != null)
+         userEntity.setFirstName(request.getFirstName());
+        if (request.getLastName() != null)
+         userEntity.setLastName(request.getLastName());
+        if (request.getEmail() != null)
+         userEntity.setEmail(request.getEmail());
+        if (request.getUsername() != null)
+            userEntity.setUsername(request.getUsername());
+        try {
+            userResource.update(userEntity);
+        }catch (Exception e) {
+            log.error("Failed to update user: {}", userId, e);
+        }
         return user.getId();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Boolean delete(Long id) {
+
         User user = userRepository.findById(id).orElseThrow(
                 () -> new GenericNotFoundException("user.not.found")
         );
         user.markAsDeleted();
         userRepository.save(user);
         cacheManagerService.delete(CachePrefix.USER);
+        try {
+            keycloak.realm(realm)
+                    .users()
+                    .delete(user.getKeycloakUserId());
+        } catch (Exception ex) {
+            log.error("Failed to rollback Keycloak user: {}", user.getKeycloakUserId(), ex);
+        }
         return true;
     }
 }
