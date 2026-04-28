@@ -13,9 +13,14 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import uz.java.spring_boot_application.client.KeycloakServiceClient;
 import uz.java.spring_boot_application.config.CustomAuthenticationProvider;
+import uz.java.spring_boot_application.config.UserSession;
 import uz.java.spring_boot_application.dto.auth.LoginResponse;
+import uz.java.spring_boot_application.dto.user.UserResponse;
+import uz.java.spring_boot_application.entities.User;
 import uz.java.spring_boot_application.exception.BadRequestException;
 import uz.java.spring_boot_application.exception.GenericRuntimeException;
+import uz.java.spring_boot_application.mapper.UserMapper;
+import uz.java.spring_boot_application.security.CustomUserDetails;
 
 import java.io.IOException;
 
@@ -25,6 +30,8 @@ public class AuthService {
 
     private final CustomAuthenticationProvider authenticationProvider;
     private final KeycloakServiceClient keycloakServiceClient;
+    private final UserSession userSession;
+    private final UserMapper userMapper;
 
     @Value("${app.keycloak.client-id}")
     private String clientId;
@@ -33,7 +40,7 @@ public class AuthService {
     private String clientSecret;
 
     public AuthService(@Value("${app.keycloak.keycloak-server-url}") String baseUrl,
-                       CustomAuthenticationProvider authenticationProvider) {
+                       CustomAuthenticationProvider authenticationProvider, UserSession userSession, UserMapper userMapper) {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -49,6 +56,14 @@ public class AuthService {
 
         this.keycloakServiceClient = retrofit.create(KeycloakServiceClient.class);
         this.authenticationProvider = authenticationProvider;
+        this.userSession = userSession;
+        this.userMapper = userMapper;
+    }
+
+    public UserResponse me() {
+        CustomUserDetails currentUser = userSession.getCurrentUser();
+        User user = currentUser.getUser();
+        return userMapper.toResponse(user);
     }
 
     public LoginResponse login(String username, String password) {

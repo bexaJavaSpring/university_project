@@ -27,5 +27,4 @@ public class UserSession {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (!Objects.isNull(authentication) && !isAnonymous(authentication));
     }
-
 }
