@@ -1,5 +1,3 @@
-// src/main/resources/static/firebase-messaging-sw.js
-
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
 
@@ -13,8 +11,6 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
-const analytics = firebase.analytics();
-analytics.setAnalyticsCollectionEnabled(true);
 
 // Background notification
 messaging.onBackgroundMessage(function(payload) {

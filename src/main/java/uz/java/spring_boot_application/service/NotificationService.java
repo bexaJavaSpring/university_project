@@ -26,7 +26,7 @@ public class NotificationService {
 
     public void sendNotification(String fcmToken) {
 //        create(new NotificationRequest("Salom", "Salom", NotificationEntity.NotificationType.SINGLE));
-        NotificationEntity notify = notificationRepository.findById(2L).orElseThrow();
+        NotificationEntity notify = notificationRepository.findById(1L).orElseThrow();
         try {
             Message message = Message.builder()
                     .setToken(fcmToken)
