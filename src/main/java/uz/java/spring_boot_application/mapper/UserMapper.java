@@ -8,6 +8,7 @@ import uz.java.spring_boot_application.entities.User;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
+
     UserResponse toResponse(User user);
 
     @Mapping(target = "keycloakUserId", ignore = true)

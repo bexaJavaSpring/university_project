@@ -2,10 +2,8 @@ package uz.java.spring_boot_application.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import uz.java.spring_boot_application.service.AuthService;
 
 @RestController
@@ -20,5 +18,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(username, password));
     }
 
-
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> me() {
+        return ResponseEntity.ok(authService.me());
+    }
 }

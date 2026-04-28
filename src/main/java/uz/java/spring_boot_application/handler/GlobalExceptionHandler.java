@@ -6,11 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import uz.java.spring_boot_application.exception.CustomAccessDeniedException;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
+import uz.java.spring_boot_application.exception.JWTTokenExpiredException;
+import uz.java.spring_boot_application.exception.JWTVerificationException;
 import uz.java.spring_boot_application.util.Translator;
 
 import java.util.List;
@@ -59,5 +60,16 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(JWTVerificationException.class)
+    public ResponseEntity<?> handleJWTVerificationException(final JWTVerificationException e) {
+        return new ResponseEntity<>(Map.of("message", e.getMessage()), new HttpHeaders(),
+                HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(JWTTokenExpiredException.class)
+    public ResponseEntity<?> handleJWTTokenExpiredException(final JWTTokenExpiredException e) {
+        return new ResponseEntity<>(Map.of("message", e.getMessage()), new HttpHeaders(),
+                HttpStatus.UNAUTHORIZED);
+    }
 
 }
