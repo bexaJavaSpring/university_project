@@ -332,6 +332,11 @@
 
     <changeSet id="1776842143132-2"
                author="lenovo">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="notifications"/>
+            </not>
+        </preConditions>
         <createTable tableName="notifications">
             <column autoIncrement="true"
                     name="id"
@@ -391,5 +396,4 @@
             <column name="keycloak_user_id" type="varchar"/>
         </addColumn>
     </changeSet>
-
 </databaseChangeLog>
