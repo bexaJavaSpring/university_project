@@ -3,6 +3,7 @@ package uz.java.spring_boot_application.service;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uz.java.spring_boot_application.util.JwtUtil;
 
 import java.util.HashMap;
 
@@ -13,6 +14,10 @@ public class JwtTokenService {
 
     @Value("${jwt.token.secret}")
     private String tokenSecret;
+
+    public JwtTokenService(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     public Boolean isValid(String token) {
         return jwtUtil.isTokenValid(token, getTokenSecret());
