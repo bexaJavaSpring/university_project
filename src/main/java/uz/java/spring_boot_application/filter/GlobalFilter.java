@@ -52,11 +52,12 @@ public class GlobalFilter extends OncePerRequestFilter {
         if (!isOpenPath(requestUri)) {
             try {
                 String token = getTokenFromRequest(request);
-                DecodedJWT verified = jwtTokenService.validate(token);
-                String username = verified.getClaim("preferred_username").asString();
-                CustomUserDetails customUserDetails = userDetailsService.loadUserByUsername(username);
-                authenticate(customUserDetails);
-                log.info(String.format("Authenticated user: %s", username));
+                if (jwtTokenService.isValid(token)) {
+                    String username = jwtTokenService.subject(token);
+                    CustomUserDetails customUserDetails = userDetailsService.loadUserByUsername(username);
+                    authenticate(request, customUserDetails);
+                    log.info("User authenticated by id: {}", customUserDetails.getUserId());
+                }
             } catch (GenericRuntimeException e) {
                 log.error("Global filter error", e);
                 resolver.resolveException(request, response, null, e);
