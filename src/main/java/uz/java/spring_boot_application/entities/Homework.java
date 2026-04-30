@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "homework")
+@Table(name = "homeworks")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,6 +16,7 @@ import java.util.List;
 public class Homework extends Auditable {
 
     private String title;
+
     private String description;
 
     private LocalDateTime deadline;
@@ -23,14 +25,12 @@ public class Homework extends Auditable {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
-    private Group group;
+    private Long groupId;
 
-    @ManyToOne
-    @JoinColumn(name = "file_id")
-    private Attachment file;
+    @ElementCollection
+    private List<String> attachmentUrls = new ArrayList<>();
 
-    @OneToMany(mappedBy = "homework")
-    private List<Submission> submissions;// student yozgan yoki yuborgan javob
+    private String teacherComment;
+
+    private Double maxBall;
 }

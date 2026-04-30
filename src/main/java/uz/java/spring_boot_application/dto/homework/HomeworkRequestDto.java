@@ -16,7 +16,6 @@ public class HomeworkRequestDto {
     private String title;
     private String description;
     private LocalDateTime deadline;
-    private Long fileId;
     private Long groupId;
 
 }

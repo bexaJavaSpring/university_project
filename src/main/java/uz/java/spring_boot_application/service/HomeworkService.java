@@ -72,7 +72,7 @@ public class HomeworkService {
 
         }
         homeworkMapper.updateHomeworkFromDto(dto, homework);
-        Long id1 = homeworkRepository.save(homework).getId();
+        homeworkRepository.save(homework).getId();
         cacheManagerService.delete(CachePrefix.HOMEWORK);
         return id;
     }
@@ -92,13 +92,13 @@ public class HomeworkService {
             Teacher teacher = teacherRepository.findByUsername(user.getUsername());
 
             boolean hasAccess = teacher.getGroups().stream()
-                    .anyMatch(n->n.getId().equals(homework.getGroup().getId()));
+                    .anyMatch(n->n.getId().equals(homework.getGroupId()));
             if (!hasAccess) {
                 throw new CustomAccessDeniedException("access denied");
             }
         } else if (list.contains("ROLE_STUDENT")) {
             Student student = studentRepository.findByUsername(user.getUsername());
-            boolean hasAccess = homework.getGroup().getId().equals(student.getGroup().getId());
+            boolean hasAccess = homework.getGroupId().equals(student.getGroup().getId());
             if (!hasAccess) {
                 throw new CustomAccessDeniedException("access denied");
             }
@@ -119,7 +119,7 @@ public class HomeworkService {
             Teacher teacher = teacherRepository.findByUsername(user.getUsername());
 
             boolean hasAccess = teacher.getGroups().stream()
-                    .anyMatch(n->n.getId().equals(homework.getGroup().getId()));
+                    .anyMatch(n->n.getId().equals(homework.getGroupId()));
             if (!hasAccess) {
                 throw new CustomAccessDeniedException("access denied");
             }

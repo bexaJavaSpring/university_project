@@ -1,37 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- db.changelog-v1.0.2-init.xml -->
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
-    <changeSet id="1777568596628-1" author="Alibek" runOnChange="false">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="faculties"/>
-                <tableExists tableName="groups"/>
-                <tableExists tableName="roles"/>
-                <tableExists tableName="rooms"/>
-                <tableExists tableName="homeworks"/>
-                <tableExists tableName="students"/>
-                <tableExists tableName="subjects"/>
-                <tableExists tableName="teachers"/>
-                <tableExists tableName="teacher_group"/>
-                <tableExists tableName="universities"/>
-                <tableExists tableName="university_attachment_urls"/>
-                <tableExists tableName="user_roles"/>
-                <tableExists tableName="users"/>
-                <tableExists tableName="zamdekan"/>
-                <tableExists tableName="homework_attachment_urls"/>
-                <tableExists tableName="homework_grade_sheets"/>
-                <tableExists tableName="student_homeworks"/>
-                <tableExists tableName="grades"/>
-                <tableExists tableName="file_entity"/>
-                <tableExists tableName="lessons"/>
-                <tableExists tableName="lesson_attachment_urls"/>
-                <tableExists tableName="notifications"/>
-            </not>
-        </preConditions>
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1777568596628-1" author="Alibek">
         <createTable tableName="faculties">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_faculties"/>
@@ -49,7 +23,8 @@
             </column>
             <column name="phone" type="VARCHAR(255)"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-2" author="Alibek">
         <createTable tableName="file_entity">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_file_entity"/>
@@ -66,7 +41,8 @@
             <column name="path" type="VARCHAR(255)"/>
             <column name="object_name" type="VARCHAR(255)"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-3" author="Alibek">
         <createTable tableName="grades">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_grades"/>
@@ -84,6 +60,8 @@
             <column name="type" type="VARCHAR(255)"/>
             <column name="comment" type="VARCHAR(255)"/>
         </createTable>
+    </changeSet>
+    <changeSet id="1777568596628-4" author="Alibek">
         <createTable tableName="groups">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_groups"/>
@@ -100,13 +78,16 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+    </changeSet>
+    <changeSet id="1777568596628-5" author="Alibek">
         <createTable tableName="homework_attachment_urls">
             <column name="homework_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
             <column name="attachment_urls" type="VARCHAR(255)"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-6" author="Alibek">
         <createTable tableName="homework_grade_sheets">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_homework_grade_sheets"/>
@@ -121,6 +102,8 @@
             <column name="homework_id" type="BIGINT"/>
             <column name="teacher_id" type="BIGINT"/>
         </createTable>
+    </changeSet>
+    <changeSet id="1777568596628-7" author="Alibek">
         <createTable tableName="homeworks">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_homeworks"/>
@@ -139,13 +122,16 @@
             <column name="teacher_comment" type="VARCHAR(255)"/>
             <column name="max_ball" type="DOUBLE"/>
         </createTable>
+    </changeSet>
+    <changeSet id="1777568596628-8" author="Alibek">
         <createTable tableName="lesson_attachment_urls">
             <column name="lesson_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
             <column name="attachment_urls" type="VARCHAR(255)"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-9" author="Alibek">
         <createTable tableName="lessons">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_lessons"/>
@@ -161,7 +147,8 @@
             <column name="file_count" type="INT"/>
             <column name="subject_id" type="BIGINT"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-10" author="Alibek">
         <createTable tableName="notifications">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_notifications"/>
@@ -185,7 +172,8 @@
             <column name="success_count" type="INT"/>
             <column name="failure_count" type="INT"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-11" author="Alibek">
         <createTable tableName="roles">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_roles"/>
@@ -199,7 +187,8 @@
             <column name="name" type="VARCHAR(255)"/>
             <column name="code" type="VARCHAR(255)"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-12" author="Alibek">
         <createTable tableName="rooms">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_rooms"/>
@@ -214,7 +203,8 @@
             <column name="room_number" type="VARCHAR(255)"/>
             <column name="group_id" type="BIGINT"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-13" author="Alibek">
         <createTable tableName="student_homeworks">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_student_homeworks"/>
@@ -225,7 +215,8 @@
             <column name="text_answer" type="VARCHAR(255)"/>
             <column name="score" type="INT"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-14" author="Alibek">
         <createTable tableName="students">
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_students"/>
@@ -234,7 +225,8 @@
             <column name="student_status" type="VARCHAR(255)"/>
             <column name="group_id" type="BIGINT"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-15" author="Alibek">
         <createTable tableName="subjects">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_subjects"/>
@@ -254,7 +246,8 @@
             <column name="total_resource_count" type="INT"/>
             <column name="semestr" type="VARCHAR(255)"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-16" author="Alibek">
         <createTable tableName="teacher_group">
             <column name="group_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teacher_group"/>
@@ -263,7 +256,8 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teacher_group"/>
             </column>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-17" author="Alibek">
         <createTable tableName="teachers">
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teachers"/>
@@ -274,7 +268,8 @@
             <column name="subject_id" type="BIGINT"/>
             <column name="faculty_id" type="BIGINT"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-18" author="Alibek">
         <createTable tableName="universities">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_universities"/>
@@ -292,14 +287,16 @@
             <column name="website" type="VARCHAR(255)"/>
             <column name="logo" type="VARCHAR(255)"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-19" author="Alibek">
         <createTable tableName="university_attachment_urls">
             <column name="university_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
             <column name="attachment_urls" type="VARCHAR(255)"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-20" author="Alibek">
         <createTable tableName="user_roles">
             <column name="role_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_roles"/>
@@ -308,7 +305,8 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_roles"/>
             </column>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-21" author="Alibek">
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
@@ -330,116 +328,149 @@
             <column name="birth_date" type="DATE"/>
             <column name="address" type="VARCHAR(255)"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-22" author="Alibek">
         <createTable tableName="zamdekan">
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_zamdekan"/>
             </column>
             <column name="faculty_id" type="BIGINT"/>
         </createTable>
-
+    </changeSet>
+    <changeSet id="1777568596628-23" author="Alibek">
         <addUniqueConstraint columnNames="nomi" constraintName="uc_faculties_nomi" tableName="faculties"/>
+    </changeSet>
+    <changeSet id="1777568596628-24" author="Alibek">
         <addUniqueConstraint columnNames="homework_id" constraintName="uc_homework_grade_sheets_homework"
                              tableName="homework_grade_sheets"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-25" author="Alibek">
         <addUniqueConstraint columnNames="phone" constraintName="uc_users_phone" tableName="users"/>
+    </changeSet>
+    <changeSet id="1777568596628-26" author="Alibek">
         <addUniqueConstraint columnNames="username" constraintName="uc_users_username" tableName="users"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-27" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="university_id" baseTableName="faculties"
                                  constraintName="FK_FACULTIES_ON_UNIVERSITY" referencedColumnNames="id"
                                  referencedTableName="universities"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-28" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="grades"
                                  constraintName="FK_GRADES_ON_STUDENT" referencedColumnNames="user_id"
                                  referencedTableName="students"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-29" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="subject_id" baseTableName="grades"
                                  constraintName="FK_GRADES_ON_SUBJECT" referencedColumnNames="id"
                                  referencedTableName="subjects"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-30" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="grades"
                                  constraintName="FK_GRADES_ON_TEACHER" referencedColumnNames="user_id"
                                  referencedTableName="teachers"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-31" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="faculty_id" baseTableName="groups"
                                  constraintName="FK_GROUPS_ON_FACULTY" referencedColumnNames="id"
                                  referencedTableName="faculties"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-32" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="homeworks"
                                  constraintName="FK_HOMEWORKS_ON_TEACHER" referencedColumnNames="user_id"
                                  referencedTableName="teachers"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-33" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="homework_id" baseTableName="homework_grade_sheets"
                                  constraintName="FK_HOMEWORK_GRADE_SHEETS_ON_HOMEWORK" referencedColumnNames="id"
                                  referencedTableName="homeworks"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-34" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="homework_grade_sheets"
                                  constraintName="FK_HOMEWORK_GRADE_SHEETS_ON_TEACHER" referencedColumnNames="user_id"
                                  referencedTableName="teachers"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-35" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="subject_id" baseTableName="lessons"
                                  constraintName="FK_LESSONS_ON_SUBJECT" referencedColumnNames="id"
                                  referencedTableName="subjects"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-36" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="rooms" constraintName="FK_ROOMS_ON_GROUP"
                                  referencedColumnNames="id" referencedTableName="groups"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-37" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="students"
                                  constraintName="FK_STUDENTS_ON_GROUP" referencedColumnNames="id"
                                  referencedTableName="groups"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-38" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="students" constraintName="FK_STUDENTS_ON_USER"
                                  referencedColumnNames="id" referencedTableName="users"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-39" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="homework_id" baseTableName="student_homeworks"
                                  constraintName="FK_STUDENT_HOMEWORKS_ON_HOMEWORK" referencedColumnNames="id"
                                  referencedTableName="homeworks"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-40" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_homeworks"
                                  constraintName="FK_STUDENT_HOMEWORKS_ON_STUDENT" referencedColumnNames="user_id"
                                  referencedTableName="students"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-41" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="faculty_id" baseTableName="teachers"
                                  constraintName="FK_TEACHERS_ON_FACULTY" referencedColumnNames="id"
                                  referencedTableName="faculties"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-42" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="subject_id" baseTableName="teachers"
                                  constraintName="FK_TEACHERS_ON_SUBJECT" referencedColumnNames="id"
                                  referencedTableName="subjects"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-43" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="teachers" constraintName="FK_TEACHERS_ON_USER"
                                  referencedColumnNames="id" referencedTableName="users"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-44" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="faculty_id" baseTableName="zamdekan"
                                  constraintName="FK_ZAMDEKAN_ON_FACULTY" referencedColumnNames="id"
                                  referencedTableName="faculties"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-45" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="zamdekan" constraintName="FK_ZAMDEKAN_ON_USER"
                                  referencedColumnNames="id" referencedTableName="users"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-46" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="homework_id" baseTableName="homework_attachment_urls"
                                  constraintName="fk_homework_attachmenturls_on_homework" referencedColumnNames="id"
                                  referencedTableName="homeworks"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-47" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="lesson_id" baseTableName="lesson_attachment_urls"
                                  constraintName="fk_lesson_attachmenturls_on_lesson" referencedColumnNames="id"
                                  referencedTableName="lessons"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-48" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="teacher_group"
                                  constraintName="fk_teagro_on_group" referencedColumnNames="id"
                                  referencedTableName="groups"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-49" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="teacher_group"
                                  constraintName="fk_teagro_on_teacher" referencedColumnNames="user_id"
                                  referencedTableName="teachers"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-50" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="university_id" baseTableName="university_attachment_urls"
                                  constraintName="fk_university_attachmenturls_on_university" referencedColumnNames="id"
                                  referencedTableName="universities"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-51" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user_roles" constraintName="fk_userol_on_role"
                                  referencedColumnNames="id" referencedTableName="roles"/>
-
+    </changeSet>
+    <changeSet id="1777568596628-52" author="Alibek">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_roles" constraintName="fk_userol_on_user"
                                  referencedColumnNames="id" referencedTableName="users"/>
     </changeSet>

@@ -12,6 +12,6 @@ public interface HomeworkRepository extends JpaRepository<Homework, Long> {
     @Query("""
           select h from Homework h
           where (:title is null or h.title = :title)
-          and (:groupId is null or h.group.id = :groupId)""")
+          and (:groupId is null or h.groupId = :groupId)""")
     Page<Homework> findByAllHomework(String title, Long groupId, Pageable pageRequest);
 }
