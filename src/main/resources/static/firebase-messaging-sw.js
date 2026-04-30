@@ -13,8 +13,6 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
-const analytics = firebase.analytics();
-analytics.setAnalyticsCollectionEnabled(true);
 
 // Background notification
 messaging.onBackgroundMessage(function(payload) {
