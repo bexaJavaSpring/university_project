@@ -11,6 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 import uz.java.spring_boot_application.dto.file.ResourceFileDto;
 import uz.java.spring_boot_application.service.FileService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/files")
 public class FileController {
@@ -26,5 +29,17 @@ public class FileController {
                                                       @RequestParam(required = false, name = "minWidth") Integer minWidth,
                                                       @RequestParam(required = false, name = "minHeight") Integer minHeight) {
         return new ResponseEntity<>(fileService.storeFile(file, minWidth, minHeight), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/upload-multiple", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<List<ResourceFileDto>> uploadFile(@RequestParam("file") List<MultipartFile> files,
+                                                            @RequestParam(required = false, name = "minWidth") Integer minWidth,
+                                                            @RequestParam(required = false, name = "minHeight") Integer minHeight) {
+        List<ResourceFileDto> response = new ArrayList<>();
+        files.stream().forEach(file -> {
+            ResourceFileDto dto = fileService.storeFile(file, minWidth, minHeight);
+            response.add(dto);
+        });
+        return ResponseEntity.ok(response);
     }
 }

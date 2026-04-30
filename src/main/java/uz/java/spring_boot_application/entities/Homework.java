@@ -30,6 +30,12 @@ public class Homework extends Auditable {
     @ElementCollection
     private List<String> attachmentUrls = new ArrayList<>();
 
+//    1. file upload boladi undan objectName oladi Front
+//    2. anashu objectName ni Homework create request ga berib yuboradi
+//
+//    Backend
+//    1. shu imageUrls lani Homework entity ga saqlanadi response qaytarish joylarida ham shu field qoshib berib yuboriladi
+
     private String teacherComment;
 
     private Double maxBall;
