@@ -49,12 +49,12 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.delete(id));
     }
 
-    @GetMapping
+    @GetMapping("/view-single")
     public ResponseEntity<?> viewStudentHomework(@RequestParam Long studentId, @RequestParam Long homeworkId){
         return ResponseEntity.ok(teacherService.viewStudentHomework(studentId, homeworkId));
     }
 
-    @GetMapping
+    @GetMapping("/all-student-homeworks")
     public ResponseEntity<List<StudentHomeworkResponse>> getAllStudentHomeworks(){
         return ResponseEntity.ok(teacherService.getAllStudentHomeworks());
     }

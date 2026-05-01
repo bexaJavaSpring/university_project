@@ -1,6 +1,7 @@
 package uz.java.spring_boot_application.dto.student;
 
 import lombok.Data;
+import uz.java.spring_boot_application.dto.file.AttachmentDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public class StudentHomeworkResponse {
     private Long studentId;
     private Long homeworkId;
-    private List<String> attachmentUrls = new ArrayList<>();
+    private List<AttachmentDto> attachmentUrls = new ArrayList<>();
     private String textAnswer;
     private Integer score;
 }

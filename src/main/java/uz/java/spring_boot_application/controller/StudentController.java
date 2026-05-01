@@ -44,7 +44,7 @@ public class StudentController {
         return ResponseEntity.ok(studentService.delete(id));
     }
 
-    @PostMapping
+    @PostMapping("/submit-homework")
     public ResponseEntity<?> submitHomework(@RequestBody @Valid SubmitHomeworkRequest request){
         return ResponseEntity.ok(studentService.submitHomework(request));
     }
