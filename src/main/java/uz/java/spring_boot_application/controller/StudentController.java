@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.java.spring_boot_application.dto.student.StudentRequest;
 import uz.java.spring_boot_application.dto.student.StudentResponse;
+import uz.java.spring_boot_application.dto.student.SubmitHomeworkRequest;
 import uz.java.spring_boot_application.service.StudentService;
 
 import java.util.List;
@@ -41,5 +42,10 @@ public class StudentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         return ResponseEntity.ok(studentService.delete(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> submitHomework(@RequestBody @Valid SubmitHomeworkRequest request){
+        return ResponseEntity.ok(studentService.submitHomework(request));
     }
 }

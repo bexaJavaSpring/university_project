@@ -9,18 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import uz.java.spring_boot_application.config.UserSession;
 import uz.java.spring_boot_application.dto.DataDto;
+import uz.java.spring_boot_application.dto.student.StudentHomeworkResponse;
 import uz.java.spring_boot_application.dto.user.TeacherFilter;
 import uz.java.spring_boot_application.dto.user.TeacherRequest;
 import uz.java.spring_boot_application.dto.user.TeacherResponse;
-import uz.java.spring_boot_application.entities.Faculty;
-import uz.java.spring_boot_application.entities.Subjects;
-import uz.java.spring_boot_application.entities.Teacher;
-import uz.java.spring_boot_application.entities.User;
+import uz.java.spring_boot_application.entities.*;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
+import uz.java.spring_boot_application.mapper.StudentMapper;
 import uz.java.spring_boot_application.mapper.TeacherMapper;
-import uz.java.spring_boot_application.repository.FacultyRepository;
-import uz.java.spring_boot_application.repository.SubjectRepository;
-import uz.java.spring_boot_application.repository.TeacherRepository;
+import uz.java.spring_boot_application.repository.*;
 import uz.java.spring_boot_application.security.CustomUserDetails;
 import uz.java.spring_boot_application.util.CachePrefix;
 
@@ -35,6 +32,10 @@ public class TeacherService {
     private final SubjectRepository subjectRepository;
     private final CacheManagerService cacheManagerService;
     private final UserSession userSession;
+    private final StudentRepository studentRepository;
+    private final StudentHomeworkRepository studentHomeworkRepository;
+    private final HomeworkRepository homeworkRepository;
+    private final StudentMapper studentMapper;
 
     @Transactional(readOnly = true)
     public TeacherResponse getOne(Long id) {
@@ -69,7 +70,7 @@ public class TeacherService {
                 filter.facultyId(),
                 filter.subjectId(),
                 pageRequest);
-        List<TeacherResponse> response =  all.stream().map(teacherMapper::toResponse).toList();
+        List<TeacherResponse> response = all.stream().map(teacherMapper::toResponse).toList();
         cacheManagerService.put(filter.hashCode() + "", CachePrefix.TEACHER, new DataDto<>(response));
         return new DataDto<>(response);
     }
@@ -118,5 +119,24 @@ public class TeacherService {
         teacherRepository.save(teacher);
         cacheManagerService.delete(CachePrefix.TEACHER);
         return true;
+    }
+
+    @Transactional(readOnly = true)
+    public StudentHomeworkResponse viewStudentHomework(Long studentId, Long homeworkId) {
+        Student student = studentRepository.findById(studentId).orElseThrow(
+                () -> new GenericNotFoundException("student.not.found")
+        );
+
+        Homework homework = homeworkRepository.findById(homeworkId).orElseThrow(
+                () -> new GenericNotFoundException("homework.not.found")
+        );
+        StudentHomework studentHomework = studentHomeworkRepository.findByStudentIdAndHomeworkId(student.getId(), homework.getId());
+        return studentMapper.toStudentHomeworkResponse(studentHomework);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudentHomeworkResponse> getAllStudentHomeworks() {
+        List<StudentHomework> all = studentHomeworkRepository.findAll();
+        return all.stream().map(studentMapper::toStudentHomeworkResponse).toList();
     }
 }

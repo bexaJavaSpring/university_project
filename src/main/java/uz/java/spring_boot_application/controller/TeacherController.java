@@ -2,13 +2,14 @@ package uz.java.spring_boot_application.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import uz.java.spring_boot_application.dto.faculty.FacultyResponse;
+import uz.java.spring_boot_application.dto.student.StudentHomeworkResponse;
 import uz.java.spring_boot_application.dto.user.TeacherFilter;
 import uz.java.spring_boot_application.dto.user.TeacherRequest;
 import uz.java.spring_boot_application.dto.user.TeacherResponse;
 import uz.java.spring_boot_application.service.TeacherService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/teachers")
@@ -46,5 +47,15 @@ public class TeacherController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTeacher(@PathVariable Long id) {
         return ResponseEntity.ok(teacherService.delete(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> viewStudentHomework(@RequestParam Long studentId, @RequestParam Long homeworkId){
+        return ResponseEntity.ok(teacherService.viewStudentHomework(studentId, homeworkId));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<StudentHomeworkResponse>> getAllStudentHomeworks(){
+        return ResponseEntity.ok(teacherService.getAllStudentHomeworks());
     }
 }

@@ -2,14 +2,15 @@ package uz.java.spring_boot_application.entities;
 
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import lombok.Setter;
-import org.hibernate.annotations.Type;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.Type;
 import uz.java.spring_boot_application.dto.file.AttachmentDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,7 +36,7 @@ public class StudentHomework {
 
     @Type(JsonType.class)
     @Column(columnDefinition = "jsonb")
-    private List<AttachmentDto> attachmentUrls;
+    private List<AttachmentDto> attachmentUrls = new ArrayList<>();
 
     private String textAnswer;
 

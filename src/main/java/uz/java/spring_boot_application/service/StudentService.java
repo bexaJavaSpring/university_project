@@ -3,13 +3,17 @@ package uz.java.spring_boot_application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.java.spring_boot_application.config.UserSession;
 import uz.java.spring_boot_application.dto.DataDto;
-import uz.java.spring_boot_application.dto.group.GroupResponse;
 import uz.java.spring_boot_application.dto.student.StudentRequest;
 import uz.java.spring_boot_application.dto.student.StudentResponse;
+import uz.java.spring_boot_application.dto.student.SubmitHomeworkRequest;
 import uz.java.spring_boot_application.entities.Student;
+import uz.java.spring_boot_application.entities.StudentHomework;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.mapper.StudentMapper;
+import uz.java.spring_boot_application.repository.HomeworkRepository;
+import uz.java.spring_boot_application.repository.StudentHomeworkRepository;
 import uz.java.spring_boot_application.repository.StudentRepository;
 import uz.java.spring_boot_application.util.CachePrefix;
 
@@ -22,6 +26,9 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
     private final CacheManagerService cacheManagerService;
+    private final HomeworkRepository homeworkRepository;
+    private final StudentHomeworkRepository studentHomeworkRepository;
+    private final UserSession userSession;
 
     @Transactional(readOnly = true)
     public DataDto<List<StudentResponse>> getAll() {
@@ -29,7 +36,7 @@ public class StudentService {
         if (data != null) {
             return (DataDto<List<StudentResponse>>) data;
         }
-        List<StudentResponse> response =  studentRepository.findAll().stream().map(
+        List<StudentResponse> response = studentRepository.findAll().stream().map(
                 studentMapper::toResponse
         ).toList();
         cacheManagerService.put(studentMapper.hashCode() + "", CachePrefix.STUDENT, new DataDto<>(response));
@@ -39,7 +46,7 @@ public class StudentService {
     @Transactional(readOnly = true)
     public StudentResponse getOne(Long id) {
         Object data = cacheManagerService.get(id.toString(), CachePrefix.STUDENT);
-        if(data != null){
+        if (data != null) {
             return (StudentResponse) data;
         }
         Student student = studentRepository.findById(id).orElseThrow(
@@ -79,6 +86,17 @@ public class StudentService {
         student.markAsDeleted();
         studentRepository.save(student);
         cacheManagerService.delete(CachePrefix.STUDENT);
+        return true;
+    }
+
+    @Transactional
+    public Boolean submitHomework(SubmitHomeworkRequest request) {
+        homeworkRepository.findById(request.getHomeworkId()).orElseThrow(
+                () -> new GenericNotFoundException("homework.not.found")
+        );
+        request.setStudentId(userSession.getCurrentUser().getUserId());
+        StudentHomework studentHomework = studentMapper.toStudentHomework(request);
+        studentHomeworkRepository.save(studentHomework);
         return true;
     }
 }
