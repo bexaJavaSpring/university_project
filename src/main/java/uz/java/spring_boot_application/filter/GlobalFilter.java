@@ -1,5 +1,6 @@
 package uz.java.spring_boot_application.filter;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -52,12 +52,11 @@ public class GlobalFilter extends OncePerRequestFilter {
         if (!isOpenPath(requestUri)) {
             try {
                 String token = getTokenFromRequest(request);
-                if (jwtTokenService.isValid(token)) {
-                    String username = jwtTokenService.subject(token);
-                    CustomUserDetails customUserDetails = userDetailsService.loadUserByUsername(username);
-                    authenticate(request, customUserDetails);
-                    log.info("User authenticated by id: {}", customUserDetails.getUserId());
-                }
+                DecodedJWT verified = jwtTokenService.validate(token);
+                String username = verified.getClaim("preferred_username").asString();
+                CustomUserDetails customUserDetails = userDetailsService.loadUserByUsername(username);
+                authenticate(customUserDetails);
+                log.info(String.format("Authenticated user: %s", username));
             } catch (GenericRuntimeException e) {
                 log.error("Global filter error", e);
                 resolver.resolveException(request, response, null, e);
@@ -70,10 +69,10 @@ public class GlobalFilter extends OncePerRequestFilter {
         log.info("->->Request = [ {}?{} ] Elapsed time to proceed this request = {}", request.getRequestURI(),
                 request.getQueryString() == null ? "" : request.getQueryString(), finish - start);
     }
-    private void authenticate(HttpServletRequest request, CustomUserDetails userDetails) {
-        // user malumotlari va authoritylari(role, permission) sessiyaga saqlash joyi
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+    private void authenticate(CustomUserDetails customUserDetails) {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 

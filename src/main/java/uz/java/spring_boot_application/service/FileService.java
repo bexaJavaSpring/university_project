@@ -49,8 +49,6 @@ public class FileService {
         String fileNamePrefix = Objects.requireNonNull(StringUtils.split(originalFilename, "."))[0];
         String fileExtension = StringUtils.getFilenameExtension(originalFilename);
         String newFileName = baseUtils.encodeToMd5(fileNamePrefix) + new Date().getTime() + "." + fileExtension;
-
-        String path;
         if (contentType.startsWith("image") && !contentType.contains("svg+xml")) {
             try {
                 MultipartFile fileToUpload = file;
@@ -59,14 +57,13 @@ public class FileService {
                         imageUtils.compressImage(rootLocation.resolve(newFileName).toString(),
                                 rootLocation.resolve(newFileName).toString(), minWidth, minHeight);
                 }
-                path = minioService.saveFile(fileToUpload, originalFilename);
+                return minioService.saveFile(fileToUpload, originalFilename);
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 throw new RuntimeException(e);
             }
         } else {
-            path = minioService.saveFile(file, originalFilename);
+            return minioService.saveFile(file, originalFilename);
         }
-        return new ResourceFileDto(path);
     }
 }

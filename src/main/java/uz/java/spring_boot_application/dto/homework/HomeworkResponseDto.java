@@ -15,5 +15,4 @@ public class HomeworkResponseDto {
     private String title;
     private String description;
     private LocalDateTime deadline;
-    private Long fileId;
 }

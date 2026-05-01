@@ -23,7 +23,7 @@ public class Teacher extends User {
 
     private String experience;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
     private Subjects subjects;
 

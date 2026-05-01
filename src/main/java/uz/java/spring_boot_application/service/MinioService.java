@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import uz.java.spring_boot_application.dto.file.ResourceFileDto;
 import uz.java.spring_boot_application.entities.FileEntity;
 import uz.java.spring_boot_application.repository.FileEntityRepository;
 import uz.java.spring_boot_application.util.MD5Decode;
@@ -41,7 +42,7 @@ public class MinioService {
     private final MinioClient minioClient;
 
     @Transactional
-    public String saveFile(MultipartFile file, String originalFilename) {
+    public ResourceFileDto saveFile(MultipartFile file, String originalFilename) {
         String res;
         FileEntity fileEntity = new FileEntity();
         fileEntity.setName(StringUtils.stripFilenameExtension(Objects.requireNonNull(originalFilename)));
@@ -65,8 +66,8 @@ public class MinioService {
         }
         fileEntity.setObjectName(res);
         fileEntity.setPath(res);
-        fileEntityRepository.save(fileEntity);
-        return res;
+        FileEntity save = fileEntityRepository.save(fileEntity);
+        return new ResourceFileDto(save.getObjectName(), save.getId());
     }
 
     public void createBucket(String bucketName) throws MinioException {
