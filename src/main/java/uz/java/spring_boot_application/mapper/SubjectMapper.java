@@ -15,4 +15,5 @@ public interface SubjectMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromRequest(SubjectRequest subjectRequest, @MappingTarget Subjects subject);
 
+    Subjects toEntity(SubjectRequest subjectRequest);
 }
