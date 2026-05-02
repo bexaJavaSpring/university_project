@@ -38,8 +38,9 @@ public class HomeworkService {
         CustomUserDetails currentUser = userSession.getCurrentUser();
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
+        Teacher teacher=null;
         if (list.contains("ROLE_TEACHER")) {
-            Teacher teacher = teacherRepository.findByUsername(user.getUsername());
+             teacher = teacherRepository.findByUsername(user.getUsername());
 
             boolean hasAccess = teacher.getGroups().stream()
                     .anyMatch(n->n.getId().equals(dto.getGroupId()));
@@ -49,6 +50,7 @@ public class HomeworkService {
 
         }
         Homework homework = homeworkMapper.toEntity(dto);
+        homework.setTeacher(teacher);
         Long id = homeworkRepository.save(homework).getId();
         cacheManagerService.delete(CachePrefix.HOMEWORK);
         return id;
@@ -61,8 +63,9 @@ public class HomeworkService {
         CustomUserDetails currentUser = userSession.getCurrentUser();
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
+        Teacher teacher=null;
         if (list.contains("ROLE_TEACHER")) {
-            Teacher teacher = teacherRepository.findByUsername(user.getUsername());
+             teacher = teacherRepository.findByUsername(user.getUsername());
 
             boolean hasAccess = teacher.getGroups().stream()
                     .anyMatch(n->n.getId().equals(dto.getGroupId()));
@@ -72,6 +75,7 @@ public class HomeworkService {
 
         }
         homeworkMapper.updateHomeworkFromDto(dto, homework);
+        homework.setTeacher(teacher);
         homeworkRepository.save(homework).getId();
         cacheManagerService.delete(CachePrefix.HOMEWORK);
         return id;

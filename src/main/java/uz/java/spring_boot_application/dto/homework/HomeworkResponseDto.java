@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,4 +17,9 @@ public class HomeworkResponseDto {
     private String title;
     private String description;
     private LocalDateTime deadline;
+    private Long groupId;
+    private List<String> attachmentUrls;
+    private String teacherComment;
+    private Double maxBall;
+
 }
