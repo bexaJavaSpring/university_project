@@ -15,6 +15,8 @@ import java.util.List;
 @Builder
 public class LessonResponse
 {
+    Long id;
+    Long subjectId;
     String title;
     LessonType type;
     List<String> attachmentUrls = new ArrayList<>();

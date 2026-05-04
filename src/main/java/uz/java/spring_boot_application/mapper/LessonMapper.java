@@ -12,7 +12,7 @@ import uz.java.spring_boot_application.entities.Lesson;
 public interface LessonMapper {
     LessonResponse toResponse(Lesson lesson);
 
-    @Mapping(source = "subjects.id", target = "subjects.id")
+    @Mapping(source = "subjectId", target = "subjects.id")
     Lesson toEntity(LessonRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

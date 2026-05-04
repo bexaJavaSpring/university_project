@@ -1,6 +1,7 @@
 package uz.java.spring_boot_application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.java.spring_boot_application.dto.lesson.LessonFilter;
 import uz.java.spring_boot_application.dto.lesson.LessonRequest;
@@ -16,13 +17,21 @@ import uz.java.spring_boot_application.specification.SearchSpecification;
 
 import java.util.List;
 
-
+@Service
 @RequiredArgsConstructor
 public class LessonService {
     private final LessonRepository repository;
     private final LessonMapper mapper;
     private final SubjectRepository subjectRepository;
 
+    public LessonResponse getOne(Long id) {
+        Lesson lesson = repository.findById(id).orElseThrow(() ->
+                new GenericNotFoundException("lesson.not.found")
+        );
+
+        LessonResponse response = mapper.toResponse(lesson);
+        return response;
+    }
 
     public List<LessonResponse> getAll(LessonFilter filter) {
         LessonSpecification spec = new LessonSpecification(filter);
@@ -34,7 +43,7 @@ public class LessonService {
 
     @Transactional
     public Long create(LessonRequest request) {
-        subjectRepository.findById(request.getSubjects().getId()).orElseThrow(
+        subjectRepository.findById(request.getSubjectId()).orElseThrow(
                 () -> new GenericNotFoundException("subject.not.found")
         );
         Lesson lesson = mapper.toEntity(request);
@@ -48,8 +57,8 @@ public class LessonService {
                 () -> new GenericNotFoundException("lesson.not.found")
         );
         mapper.updateFromRequest(request, lesson);
-        if (request.getSubjects().getId() != null) {
-            Subjects subjects = subjectRepository.findById(request.getSubjects().getId()).orElseThrow(
+        if (request.getSubjectId() != null) {
+            Subjects subjects = subjectRepository.findById(request.getSubjectId()).orElseThrow(
                     () -> new GenericNotFoundException("subject.not.found")
             );
             lesson.setSubjects(subjects);
@@ -67,4 +76,5 @@ public class LessonService {
         repository.save(lesson);
         return true;
     }
+
 }

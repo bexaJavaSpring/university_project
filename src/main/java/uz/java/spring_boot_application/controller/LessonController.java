@@ -16,7 +16,12 @@ import java.util.List;
 @RequestMapping("/lessons")
 @RequiredArgsConstructor
 public class LessonController {
-    private LessonService service;
+    private final LessonService service;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LessonResponse> getOne(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getOne(id));
+    }
 
     @GetMapping("/all")
     public ResponseEntity<List<LessonResponse>> getAll(@RequestParam Integer page,

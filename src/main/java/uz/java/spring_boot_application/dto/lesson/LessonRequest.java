@@ -19,6 +19,6 @@ public class LessonRequest {
     String title;
     LessonType type;
     List<String> attachmentUrls = new ArrayList<>();
-    @NotNull(message = "subject.must.not.be.null")
-    Subjects subjects;
+//    @NotNull(message = "subject.must.not.be.null")
+    Long subjectId;
 }
