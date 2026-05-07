@@ -3,6 +3,7 @@ package uz.java.spring_boot_application.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uz.java.spring_boot_application.dto.homework.HomeworkGradeRequestDto;
 import uz.java.spring_boot_application.dto.student.StudentHomeworkResponse;
 import uz.java.spring_boot_application.dto.user.TeacherFilter;
 import uz.java.spring_boot_application.dto.user.TeacherRequest;
@@ -57,5 +58,10 @@ public class TeacherController {
     @GetMapping("/all-student-homeworks")
     public ResponseEntity<List<StudentHomeworkResponse>> getAllStudentHomeworks(){
         return ResponseEntity.ok(teacherService.getAllStudentHomeworks());
+    }
+    @PostMapping("/homework/grade/{homeworkId}")
+    public ResponseEntity<?> createHomeworkGrade(@PathVariable Long homeworkId,
+                                                 @RequestBody HomeworkGradeRequestDto dto){
+        return ResponseEntity.ok(teacherService.createHomeworkGrade(homeworkId,dto));
     }
 }

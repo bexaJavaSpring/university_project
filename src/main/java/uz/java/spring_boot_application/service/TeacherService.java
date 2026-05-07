@@ -4,16 +4,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import uz.java.spring_boot_application.config.UserSession;
 import uz.java.spring_boot_application.dto.DataDto;
+import uz.java.spring_boot_application.dto.grade.GradeDto;
+import uz.java.spring_boot_application.dto.homework.HomeworkGradeRequestDto;
 import uz.java.spring_boot_application.dto.student.StudentHomeworkResponse;
 import uz.java.spring_boot_application.dto.user.TeacherFilter;
 import uz.java.spring_boot_application.dto.user.TeacherRequest;
 import uz.java.spring_boot_application.dto.user.TeacherResponse;
 import uz.java.spring_boot_application.entities.*;
+import uz.java.spring_boot_application.exception.CustomAccessDeniedException;
 import uz.java.spring_boot_application.exception.GenericNotFoundException;
 import uz.java.spring_boot_application.mapper.StudentMapper;
 import uz.java.spring_boot_application.mapper.TeacherMapper;
@@ -36,6 +40,7 @@ public class TeacherService {
     private final StudentHomeworkRepository studentHomeworkRepository;
     private final HomeworkRepository homeworkRepository;
     private final StudentMapper studentMapper;
+    private final HomeworkGradeSheetRepository homeworkGradeSheetRepository;
 
     @Transactional(readOnly = true)
     public TeacherResponse getOne(Long id) {
@@ -138,5 +143,39 @@ public class TeacherService {
     public List<StudentHomeworkResponse> getAllStudentHomeworks() {
         List<StudentHomework> all = studentHomeworkRepository.findAll();
         return all.stream().map(studentMapper::toStudentHomeworkResponse).toList();
+    }
+
+    public Long createHomeworkGrade(Long homeworkId, HomeworkGradeRequestDto dto) {
+        Homework homework = homeworkRepository.findById(homeworkId).
+                orElseThrow(()->new GenericNotFoundException("homework.not.found"));
+        Teacher teacher = teacherRepository.findById(dto.getTeacherId()).
+                orElseThrow(()->new GenericNotFoundException("teacher.not.found"));
+        CustomUserDetails customUserDetails = userSession.getCurrentUser();
+        User user = customUserDetails.getUser();
+        List<String> roles = user.getRoles().stream().map(Role::getCode).toList();
+
+        if (roles.contains("ROLE_TEACHER")) {
+            boolean hasAccess = teacher.getGroups().stream()
+                    .anyMatch(n->n.getId().equals(homework.getGroupId()));
+            if (!hasAccess) {
+                throw new CustomAccessDeniedException("access denied");
+            }
+        }
+
+        List<Long> studentIds = dto.getGradeList()
+                .stream().map(GradeDto::getStudentId).toList();
+
+        long count = studentRepository.countByIdIn(studentIds);
+
+        if (count!=studentIds.size())
+            throw new RuntimeException("student.not.found");
+
+        HomeworkGradeSheet homeworkGradeSheet = new HomeworkGradeSheet();
+        homeworkGradeSheet.setHomework(homework);
+        homeworkGradeSheet.setGradeList(dto.getGradeList());
+        homeworkGradeSheet.setTeacher(teacher);
+        homeworkGradeSheetRepository.save(homeworkGradeSheet);
+        return homeworkGradeSheet.getId();
+
     }
 }
