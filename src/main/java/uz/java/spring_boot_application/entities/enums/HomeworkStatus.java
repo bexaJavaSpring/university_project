@@ -1,4 +1,4 @@
-package uz.java.spring_boot_application.entities;
+package uz.java.spring_boot_application.entities.enums;
 
 import lombok.Getter;
 

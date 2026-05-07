@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import uz.java.spring_boot_application.entities.enums.Semestr;
 import uz.java.spring_boot_application.entities.enums.SubjectType;
 
 @Entity

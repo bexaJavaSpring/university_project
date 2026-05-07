@@ -30,7 +30,7 @@ public class SubjectController {
         return ResponseEntity.ok(subjectService.getAll(new SubjectFilter(page, limit, sortBy, name)));
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<?> addSubject(@RequestBody SubjectRequest subjectRequest) {
         return ResponseEntity.ok(subjectService.create(subjectRequest));
     }

@@ -20,7 +20,6 @@ public interface TeacherMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateFromRequest(TeacherRequest request, @MappingTarget Teacher teacher);
 
-    @Mapping(source = "subjectId", target = "subjects.id")
     @Mapping(source = "facultyId", target = "faculty.id")
     Teacher toEntity(TeacherRequest teacherRequest);
 }

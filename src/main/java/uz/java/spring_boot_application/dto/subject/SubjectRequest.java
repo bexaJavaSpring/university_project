@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubjectRequest {
-    private Long subjectId;
-    private String subjectName;
+
+    private String name;
     private String description;
 }

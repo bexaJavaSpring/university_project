@@ -32,9 +32,7 @@ public class SubjectService {
 
     @Transactional
     public Long create(SubjectRequest subjectRequest) {
-        Subjects subject = subjectRepository.findById(subjectRequest.getSubjectId()).orElse(null);
-        if (subject == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Subject not found");
+        Subjects subject = subjectMapper.toEntity(subjectRequest);
         subjectRepository.save(subject);
         cacheManagerService.delete(CachePrefix.SUBJECT);
         return subject.getId();
@@ -73,8 +71,8 @@ public class SubjectService {
 
     @Transactional
     public Long update(SubjectRequest subjectRequest, Long subjectId) {
-        var subject = subjectRepository.findById(subjectRequest.getSubjectId()).orElseThrow(
-                () -> new RuntimeException("Subject not found")
+        var subject = subjectRepository.findById(subjectId).
+                orElseThrow(() -> new RuntimeException("Subject not found")
         );
 
         subjectMapper.updateFromRequest(subjectRequest, subject);

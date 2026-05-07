@@ -11,4 +11,5 @@ import java.util.List;
 public class HomeworkGradeRequestDto {
 
     private List<GradeDto> gradeList;
+    private Long teacherId;
 }

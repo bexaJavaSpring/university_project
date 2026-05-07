@@ -8,6 +8,7 @@ import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.jose.jwk.JWK;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -85,6 +86,7 @@ public class UserService {
         userRepresentation.setEmail(request.getEmail());
         userRepresentation.setEmailVerified(true);
         userRepresentation.setUsername(request.getUsername());
+
         // password saqlash
         var password = new CredentialRepresentation();
         password.setType(CredentialRepresentation.PASSWORD);
@@ -101,6 +103,20 @@ public class UserService {
             }
 
             keycloakUserId = extractUserId(response);
+            // 🔥 3. ROLE BIRIKTIRISH (ENG MUHIM QISM)
+
+            // request.getRole() -> masalan "SUPER_ADMIN"
+            RoleRepresentation roleRepresentation = keycloak.realm(realm)
+                    .roles()
+                    .get(request.getRoleCode()) // 🔴 DTO da role bo‘lishi kerak
+                    .toRepresentation();
+
+            keycloak.realm(realm)
+                    .users()
+                    .get(keycloakUserId)
+                    .roles()
+                    .realmLevel()
+                    .add(List.of(roleRepresentation));
             return saveEntity(request, keycloakUserId);
 
         } catch (Exception e) {

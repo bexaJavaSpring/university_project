@@ -7,8 +7,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
@@ -18,7 +21,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import uz.java.spring_boot_application.filter.GlobalFilter;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -40,6 +46,7 @@ public class SecurityConfig {
             "/webjars",
             "/auth/login",
             "/files/upload",
+            "/users/create",
             // vaqtincha Firebase uchun
             "/home",
             "/home/**",
@@ -70,12 +77,42 @@ public class SecurityConfig {
                 )
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                        )
+                )
                 .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
                 .addFilterBefore(globalFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
                         httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(authenticationEntryPoint));
 
         return http.build();
+    }
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+
+        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+
+            Collection<GrantedAuthority> authorities = new ArrayList<>();
+
+            Map<String, Object> realmAccess = jwt.getClaim("realm_access");
+
+            if (realmAccess != null) {
+                List<String> roles = (List<String>) realmAccess.get("roles");
+
+                authorities.addAll(
+                        roles.stream()
+                                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                                .toList()
+                );
+            }
+
+            return authorities;
+        });
+
+        return converter;
     }
 
     @Bean

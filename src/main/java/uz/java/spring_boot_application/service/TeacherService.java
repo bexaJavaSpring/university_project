@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,6 +28,7 @@ import uz.java.spring_boot_application.security.CustomUserDetails;
 import uz.java.spring_boot_application.util.CachePrefix;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -147,13 +151,13 @@ public class TeacherService {
     public Long createHomeworkGrade(Long homeworkId, HomeworkGradeRequestDto dto) {
         Homework homework = homeworkRepository.findById(homeworkId).
                 orElseThrow(()->new GenericNotFoundException("homework.not.found"));
-        CustomUserDetails currentUser = userSession.getCurrentUser();
-        User user = currentUser.getUser();
-        List<String> list = user.getRoles().stream().map(Role::getCode).toList();
-        Teacher teacher=null;
-        if (list.contains("ROLE_TEACHER")) {
-             teacher = teacherRepository.findByUsername(user.getUsername());
-
+        Teacher teacher = teacherRepository.findById(dto.getTeacherId()).
+                orElseThrow(()->new GenericNotFoundException("teacher.not.found"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Map<String, Object> realmAccess = jwt.getClaim("realm_access");
+        List<String> roles = (List<String>) realmAccess.get("roles");
+        if (roles.contains("ROLE_TEACHER")) {
             boolean hasAccess = teacher.getGroups().stream()
                     .anyMatch(n->n.getId().equals(homework.getGroupId()));
             if (!hasAccess) {

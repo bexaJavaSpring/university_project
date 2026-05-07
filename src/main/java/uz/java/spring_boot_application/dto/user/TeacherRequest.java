@@ -11,7 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TeacherRequest {
-        private Long id;
         private Double salary;
         private String qualification;
         private String experience;

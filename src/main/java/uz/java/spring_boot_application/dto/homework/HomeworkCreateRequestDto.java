@@ -1,9 +1,5 @@
 package uz.java.spring_boot_application.dto.homework;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,21 +7,17 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class HomeworkResponseDto {
-    private Long id;
+public class HomeworkCreateRequestDto {
     private String title;
     private String description;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime deadline;
     private Long groupId;
     private List<String> attachmentUrls;
     private String teacherComment;
     private Double maxBall;
-
+    private Long teacherId;
 }

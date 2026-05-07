@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import uz.java.spring_boot_application.entities.Teacher;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
@@ -23,6 +24,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
     Teacher findByUsername(String username);
 
-    List<Teacher> id(Long id);
+
 }
 

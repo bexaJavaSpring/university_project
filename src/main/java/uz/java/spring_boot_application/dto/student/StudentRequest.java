@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class StudentRequest {
     @NotNull(message = "age.must.not.be.null")
-    @NotBlank(message = "age.must.not.be.blank")
     private Integer age;
     private String gender;
     private LocalDate birthDate;
