@@ -19,6 +19,8 @@ import uz.java.spring_boot_application.repository.HomeworkRepository;
 import uz.java.spring_boot_application.repository.StudentRepository;
 import uz.java.spring_boot_application.repository.TeacherRepository;
 import uz.java.spring_boot_application.security.CustomUserDetails;
+import uz.java.spring_boot_application.specification.HomeworkSpecification;
+import uz.java.spring_boot_application.specification.SearchSpecification;
 import uz.java.spring_boot_application.util.CachePrefix;
 
 import java.util.List;
@@ -38,8 +40,9 @@ public class HomeworkService {
         CustomUserDetails currentUser = userSession.getCurrentUser();
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
+        Teacher teacher=teacherRepository.findById(dto.getTeacherId())
+                .orElseThrow(()->new GenericNotFoundException("Teacher not found"));
         if (list.contains("ROLE_TEACHER")) {
-            Teacher teacher = teacherRepository.findByUsername(user.getUsername());
 
             boolean hasAccess = teacher.getGroups().stream()
                     .anyMatch(n->n.getId().equals(dto.getGroupId()));
@@ -49,6 +52,9 @@ public class HomeworkService {
 
         }
         Homework homework = homeworkMapper.toEntity(dto);
+        if (teacher!=null){
+            homework.setTeacher(teacher);
+        }
         Long id = homeworkRepository.save(homework).getId();
         cacheManagerService.delete(CachePrefix.HOMEWORK);
         return id;
@@ -61,9 +67,9 @@ public class HomeworkService {
         CustomUserDetails currentUser = userSession.getCurrentUser();
         User user = currentUser.getUser();
         List<String> list = user.getRoles().stream().map(Role::getCode).toList();
+        Teacher teacher = teacherRepository.findById(dto.getTeacherId())
+                .orElseThrow(()->new GenericNotFoundException("Teacher not found"));
         if (list.contains("ROLE_TEACHER")) {
-            Teacher teacher = teacherRepository.findByUsername(user.getUsername());
-
             boolean hasAccess = teacher.getGroups().stream()
                     .anyMatch(n->n.getId().equals(dto.getGroupId()));
             if (!hasAccess) {
@@ -137,9 +143,11 @@ public class HomeworkService {
         if (data!=null){
             return (DataDto<List<HomeworkResponseDto>>) data;
         }
-        PageRequest pageRequest = PageRequest.of(homeworkFilter.page(), homeworkFilter.size(), Sort.by(homeworkFilter.sortBy()!=null?homeworkFilter.sortBy():"id").ascending());
-        Page<Homework> page = homeworkRepository.findByAllHomework(homeworkFilter.title(),homeworkFilter.groupId(),pageRequest);
-        List<HomeworkResponseDto>  responseDtoList = page.stream().map(homeworkMapper::toResponseDto).toList();
+        HomeworkSpecification homeworkSpecification = new HomeworkSpecification(homeworkFilter);
+       List<Homework> homework = homeworkRepository.findAll(homeworkSpecification, SearchSpecification.getPageable(
+               homeworkFilter.page(),homeworkFilter.size(),homeworkFilter.sortBy()
+       )).toList();
+        List<HomeworkResponseDto>  responseDtoList = homework.stream().map(homeworkMapper::toResponseDto).toList();
         cacheManagerService.put(homeworkFilter.hashCode()+"", CachePrefix.HOMEWORK, new DataDto<>(responseDtoList));
         return new DataDto<>(responseDtoList);
     }
