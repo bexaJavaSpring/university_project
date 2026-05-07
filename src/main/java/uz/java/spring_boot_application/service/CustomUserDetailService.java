@@ -29,7 +29,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username); // shu yerda har safar username orqali user qidirilyapti shu uchun bizlar username field ga index qoshdik
         if (user == null)
             throw new GenericNotFoundException("user.not.found");
 

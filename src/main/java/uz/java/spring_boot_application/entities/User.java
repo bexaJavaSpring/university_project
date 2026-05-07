@@ -15,7 +15,15 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "users")
+@Table(name = "users", indexes = {
+        @Index(name = "idx_username", columnList = "username"),
+        @Index(name = "idx_email", columnList = "email")
+})  // indexing bu search yani qidiruv operatsiyalarini tezlashtiradi, nagruzkani kamaytiradi. Bu qaysidir table ning qaysidir fieldiga qoyiladi
+ // id esa bundan mustasno (chunki Postgresql da id lar agar primary key bo'lsa deafult holatda id automatik index qoshilgan boladi
+//Indexing ni hamma field ga qoyish shartmas faqat ko'p ishlatiladigan yani har safar ishlatiladigan joylarga qoyish kk.
+
+//Kamchiliklari: Indexing create, update, delete entity bo'lganda index qayta yangilanadi shuni hisobiga CUD(create, update, delete)
+//api lar sekinlashadi. lekin get zaproslar tezlashadi.
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User extends Auditable {
 
