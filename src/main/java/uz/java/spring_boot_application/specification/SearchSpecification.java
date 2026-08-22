@@ -6,7 +6,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.Objects;
 
-public class SearchSpecification {
+public  class SearchSpecification {
 
     public static Pageable getPageable(Integer page, Integer limit) {
         return getPageable(page, limit, null);

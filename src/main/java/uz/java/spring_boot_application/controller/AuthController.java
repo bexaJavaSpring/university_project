@@ -14,7 +14,6 @@ import uz.java.spring_boot_application.service.AuthService;
 public class AuthController {
 
     private final AuthService authService;
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
         return ResponseEntity.ok(authService.login(username, password));
